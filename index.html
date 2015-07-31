@@ -1,0 +1,60 @@
+<html>
+  <head>
+    <title>Captain's Log</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Need this for asset loading with relatvie path -->
+    <script>
+      function loadAsset(asset, assetType) {
+        if (assetType == 'css') {
+          var link = document.createElement('link');
+          link.setAttribute('rel', 'stylesheet');
+          link.setAttribute('href', require('path').join(__dirname, asset));
+        } else {
+          var link = document.createElement('script');
+          link.setAttribute('src', require('path').join(__dirname, asset));
+        }
+        document.head.appendChild(link);
+      }
+      loadAsset('assets/css/main.css', 'css');
+      loadAsset('assets/css/normalize.css', 'css');
+      loadAsset('/assets/css/material.min.css', 'css');
+      loadAsset('/assets/js/material.min.js', 'js');
+    </script>
+  </head>
+  <body>
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+      <header class="mdl-layout__header">
+        <div class="mdl-layout__header-row menu">
+          <button id="demo-menu-lower-left" class="mdl-button mdl-js-button mdl-button--icon">
+            <i class="material-icons">more_vert</i>
+          </button>
+          <ul class="mdl-menu mdl-menu--bottom-left mdl-js-menu mdl-js-ripple-effect"
+              for="demo-menu-lower-left">
+            <li class="mdl-menu__item">Some Action</li>
+            <li class="mdl-menu__item">Another Action</li>
+            <li disabled class="mdl-menu__item">Disabled Action</li>
+            <li class="mdl-menu__item">Yet Another Action</li>
+          </ul>
+          <span class="mdl-layout-title">Title</span>
+        </div>
+      </header>
+      <main class="mdl-layout__content">
+        <div class="page-content"></div>
+      </main>
+    </div>
+    <!-- <div class='menu'>
+      <button id="demo-menu-lower-left" class="mdl-button mdl-js-button mdl-button--icon">
+        <i class="material-icons">more_vert</i>
+      </button>
+      <ul class="mdl-menu mdl-menu--bottom-left mdl-js-menu mdl-js-ripple-effect"
+          for="demo-menu-lower-left">
+        <li class="mdl-menu__item">Some Action</li>
+        <li class="mdl-menu__item">Another Action</li>
+        <li disabled class="mdl-menu__item">Disabled Action</li>
+        <li class="mdl-menu__item">Yet Another Action</li>
+      </ul>
+    </div>
+    <div class='content'></div> -->
+  </body>
+</html>
