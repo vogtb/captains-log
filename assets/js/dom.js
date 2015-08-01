@@ -1,1 +1,0 @@
-console.log(get_data({'url': 'stuff', 'other': 10}));

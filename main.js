@@ -1,7 +1,9 @@
-var app = require('app');
-var ipc = require('ipc');
-var BrowserWindow = require('browser-window');
-var DEBUG = false;
+var app = require('app'),
+  ipc = require('ipc'),
+  BrowserWindow = require('browser-window'),
+  dialog = require('dialog'),
+  DEBUG = false,
+  userDataPath = app.getPath('userData');
 
 // Report crashes to our server.
 require('crash-reporter').start();
@@ -32,7 +34,6 @@ app.on('ready', function() {
   }
 
   // //open a file
-  // var dialog = require('dialog');
   // dialog.showOpenDialog(mainWindow, {
   //   properties: ['openFile'],
   //   filters: [{ name: 'readme docs', extensions: ['md']}]

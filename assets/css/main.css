@@ -5,20 +5,30 @@
 
 .input-panel {
   height: 16%;
-  width: 90%;
+  width: 96%;
   margin: 0 auto;
-  padding-left: 5%;
-  padding-right: 5%;
+  padding-left: 2%;
+  padding-right: 2%;
   background: #F5F5F5;
   position: absolute;
   bottom: 0px;
   left: 0px;
+  z-index: 10000;
 }
 
-.input-panel form {
+.input-panel .mdl-textfield {
   width: 100%;
 }
 
-.input-panel form .mdl-textfield {
-  width: 100%;
+.input-panel textarea {
+  resize: none;
+}
+
+.logline {
+
+}
+
+.timestamp {
+  font-weight: 600;
+  text-align: right;
 }
