@@ -7,10 +7,15 @@
     <script>
       var jsAssetsDirectory = require('path').join(__dirname, 'assets', 'js'),
         assetsDirectory = require('path').join(__dirname, 'assets')
-      function loadAsset(asset) {
-        var link = document.createElement('link');
-        link.setAttribute('rel', 'stylesheet');
-        link.setAttribute('href', require('path').join(__dirname, asset));
+      function loadAsset(asset, assetType) {
+        if (assetType == 'css') {
+          var link = document.createElement('link');
+          link.setAttribute('rel', 'stylesheet');
+          link.setAttribute('href', require('path').join(__dirname, asset));
+        } else {
+          var link = document.createElement('script');
+          link.setAttribute('src', require('path').join(__dirname, asset));
+        }
         document.head.appendChild(link);
       }
       function loadRequires() {
@@ -27,8 +32,9 @@
       }
     </script>
     <script>
-      loadAsset('assets/css/main.css');
-      loadAsset('/assets/css/material.min.css');
+      loadAsset('assets/css/main.css', 'css');
+      loadAsset('/assets/css/material.min.css', 'css');
+      loadAsset('/assets/js/material.min.js', 'js');
       loadRequires();
     </script>
   </head>

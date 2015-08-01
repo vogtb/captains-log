@@ -1,13 +1,18 @@
 requirejs.config({
     baseUrl: jsAssetsDirectory,
+    paths: {
+      index: 'index',
+      jquery: 'jquery-2.1.4.min'
+    },
     shim: {
       'jquery': 'jquery-2.1.4.min',
-      'material': 'material.min'
+      index: {
+        deps: ['jquery']
+      }
     }
 });
 
 requirejs([
-  'jquery-2.1.4.min',
-  'material.min',
+  'jquery',
   'index'
 ]);
