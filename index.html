@@ -5,15 +5,18 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <!-- Need this for asset loading with relatvie path -->
     <script>
-      function loadAsset(asset, assetType) {
-        if (assetType == 'css') {
-          var link = document.createElement('link');
-          link.setAttribute('rel', 'stylesheet');
-          link.setAttribute('href', require('path').join(__dirname, asset));
-        } else {
-          var link = document.createElement('script');
-          link.setAttribute('src', require('path').join(__dirname, asset));
-        }
+      var jsAssetsDirectory = require('path').join(__dirname, 'assets', 'js'),
+        assetsDirectory = require('path').join(__dirname, 'assets')
+      function loadAsset(asset) {
+        var link = document.createElement('link');
+        link.setAttribute('rel', 'stylesheet');
+        link.setAttribute('href', require('path').join(__dirname, asset));
+        document.head.appendChild(link);
+      }
+      function loadRequires() {
+        var link = document.createElement('script');
+        link.setAttribute('data-main', 'assets/js/loads.js');
+        link.setAttribute('src', require('path').join(__dirname, 'assets/js/requires.js'));
         document.head.appendChild(link);
       }
     </script>
@@ -24,11 +27,9 @@
       }
     </script>
     <script>
-      loadAsset('assets/css/main.css', 'css');
-      loadAsset('/assets/css/material.min.css', 'css');
-      loadAsset('/assets/js/material.min.js', 'js');
-      loadAsset('/assets/js/jquery-2.1.4.min.js', 'js');
-      loadAsset('/assets/js/index.js', 'js');
+      loadAsset('assets/css/main.css');
+      loadAsset('/assets/css/material.min.css');
+      loadRequires();
     </script>
   </head>
   <body>
