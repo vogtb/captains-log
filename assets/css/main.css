@@ -2,3 +2,23 @@
   background: #2196F3;
   color: white;
 }
+
+.input-panel {
+  height: 16%;
+  width: 90%;
+  margin: 0 auto;
+  padding-left: 5%;
+  padding-right: 5%;
+  background: #F5F5F5;
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+}
+
+.input-panel form {
+  width: 100%;
+}
+
+.input-panel form .mdl-textfield {
+  width: 100%;
+}
