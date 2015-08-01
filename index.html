@@ -24,18 +24,20 @@
         link.setAttribute('src', require('path').join(__dirname, 'assets/js/requires.js'));
         document.head.appendChild(link);
       }
-    </script>
-    <script>
       var ipc = require('ipc');
       function fetch_data(data) {
         return ipc.sendSync('data_transmission', data);
       }
-    </script>
-    <script>
       loadAsset('assets/css/main.css', 'css');
       loadAsset('/assets/css/material.min.css', 'css');
       loadAsset('/assets/js/material.min.js', 'js');
       loadRequires();
+    </script>
+    <script id="logline-template" type="text/x-handlebars-template">
+      <div class="mdl-grid">
+        <div class="mdl-cell mdl-cell--10-col text">{{ text }}</div>
+        <div class="mdl-cell mdl-cell--2-col timestamp" timestamp="{{ timestamp }}">{{ timestring }}</div>
+      </div>
     </script>
   </head>
   <body>
@@ -52,55 +54,15 @@
         </div>
       </header>
       <main class="mdl-layout__content">
-        <div class="page-content content-holder">
-          <div class="mdl-grid">
-            <div class="mdl-cell mdl-cell--10-col logline">To use a CSS spritesheet, reference the stylesheet for the icon category you wish to use, then include the icon definition in your markup. E.g. to use one of the play icons in css-sprite-av. To use a CSS spritesheet, reference the stylesheet for the icon category you wish to use, then include the icon definition in your markup. E.g. to use one of the play icons in css-sprite-av. To use a CSS spritesheet, reference the stylesheet for the icon category you wish to use, then include the icon definition in your markup. E.g. to use one of the play icons in css-sprite-av. To use a CSS spritesheet, reference the stylesheet for the icon category you wish to use, then include the icon definition in your markup. E.g. to use one of the play icons in css-sprite-av.</div>
-            <div class="mdl-cell mdl-cell--2-col timestamp">Sat Aug 01 2015 10:21</div>
-          </div>
-          <div class="mdl-grid">
-            <div class="mdl-cell mdl-cell--10-col logline">To use a CSS spritesheet, reference the stylesheet for the icon category you wish to use, then include the icon definition in your markup. E.g. to use one of the play icons in css-sprite-av. To use a CSS spritesheet, reference the stylesheet for the icon category you wish to use, then include the icon definition in your markup. E.g. to use one of the play icons in css-sprite-av. To use a CSS spritesheet, reference the stylesheet for the icon category you wish to use, then include the icon definition in your markup. E.g. to use one of the play icons in css-sprite-av. To use a CSS spritesheet, reference the stylesheet for the icon category you wish to use, then include the icon definition in your markup. E.g. to use one of the play icons in css-sprite-av.</div>
-            <div class="mdl-cell mdl-cell--2-col timestamp">Sat Aug 01 2015 10:21</div>
-          </div>
-          <div class="mdl-grid">
-            <div class="mdl-cell mdl-cell--10-col logline">To use a CSS spritesheet, reference the stylesheet for the icon category you wish to use, then include the icon definition in your markup. E.g. to use one of the play icons in css-sprite-av. To use a CSS spritesheet, reference the stylesheet for the icon category you wish to use, then include the icon definition in your markup. E.g. to use one of the play icons in css-sprite-av. To use a CSS spritesheet, reference the stylesheet for the icon category you wish to use, then include the icon definition in your markup. E.g. to use one of the play icons in css-sprite-av. To use a CSS spritesheet, reference the stylesheet for the icon category you wish to use, then include the icon definition in your markup. E.g. to use one of the play icons in css-sprite-av.</div>
-            <div class="mdl-cell mdl-cell--2-col timestamp">Sat Aug 01 2015 10:21</div>
-          </div>
-          <div class="mdl-grid">
-            <div class="mdl-cell mdl-cell--10-col logline">To use a CSS spritesheet, reference the stylesheet for the icon category you wish to use, then include the icon definition in your markup. E.g. to use one of the play icons in css-sprite-av. To use a CSS spritesheet, reference the stylesheet for the icon category you wish to use, then include the icon definition in your markup. E.g. to use one of the play icons in css-sprite-av. To use a CSS spritesheet, reference the stylesheet for the icon category you wish to use, then include the icon definition in your markup. E.g. to use one of the play icons in css-sprite-av. To use a CSS spritesheet, reference the stylesheet for the icon category you wish to use, then include the icon definition in your markup. E.g. to use one of the play icons in css-sprite-av.</div>
-            <div class="mdl-cell mdl-cell--2-col timestamp">Sat Aug 01 2015 10:21</div>
-          </div>
-          <div class="mdl-grid">
-            <div class="mdl-cell mdl-cell--10-col logline">To use a CSS spritesheet, reference the stylesheet for the icon category you wish to use, then include the icon definition in your markup. E.g. to use one of the play icons in css-sprite-av. To use a CSS spritesheet, reference the stylesheet for the icon category you wish to use, then include the icon definition in your markup. E.g. to use one of the play icons in css-sprite-av. To use a CSS spritesheet, reference the stylesheet for the icon category you wish to use, then include the icon definition in your markup. E.g. to use one of the play icons in css-sprite-av. To use a CSS spritesheet, reference the stylesheet for the icon category you wish to use, then include the icon definition in your markup. E.g. to use one of the play icons in css-sprite-av.</div>
-            <div class="mdl-cell mdl-cell--2-col timestamp">Sat Aug 01 2015 10:21</div>
-          </div>
-          <div class="mdl-grid">
-            <div class="mdl-cell mdl-cell--10-col logline">To use a CSS spritesheet, reference the stylesheet for the icon category you wish to use, then include the icon definition in your markup. E.g. to use one of the play icons in css-sprite-av. To use a CSS spritesheet, reference the stylesheet for the icon category you wish to use, then include the icon definition in your markup. E.g. to use one of the play icons in css-sprite-av. To use a CSS spritesheet, reference the stylesheet for the icon category you wish to use, then include the icon definition in your markup. E.g. to use one of the play icons in css-sprite-av. To use a CSS spritesheet, reference the stylesheet for the icon category you wish to use, then include the icon definition in your markup. E.g. to use one of the play icons in css-sprite-av.</div>
-            <div class="mdl-cell mdl-cell--2-col timestamp">Sat Aug 01 2015 10:21</div>
-          </div>
-          <div class="mdl-grid">
-            <div class="mdl-cell mdl-cell--10-col logline">To use a CSS spritesheet, reference the stylesheet for the icon category you wish to use, then include the icon definition in your markup. E.g. to use one of the play icons in css-sprite-av. To use a CSS spritesheet, reference the stylesheet for the icon category you wish to use, then include the icon definition in your markup. E.g. to use one of the play icons in css-sprite-av. To use a CSS spritesheet, reference the stylesheet for the icon category you wish to use, then include the icon definition in your markup. E.g. to use one of the play icons in css-sprite-av. To use a CSS spritesheet, reference the stylesheet for the icon category you wish to use, then include the icon definition in your markup. E.g. to use one of the play icons in css-sprite-av.</div>
-            <div class="mdl-cell mdl-cell--2-col timestamp">Sat Aug 01 2015 10:21</div>
-          </div>
-          <div class="mdl-grid">
-            <div class="mdl-cell mdl-cell--10-col logline">To use a CSS spritesheet, reference the stylesheet for the icon category you wish to use, then include the icon definition in your markup. E.g. to use one of the play icons in css-sprite-av. To use a CSS spritesheet, reference the stylesheet for the icon category you wish to use, then include the icon definition in your markup. E.g. to use one of the play icons in css-sprite-av. To use a CSS spritesheet, reference the stylesheet for the icon category you wish to use, then include the icon definition in your markup. E.g. to use one of the play icons in css-sprite-av. To use a CSS spritesheet, reference the stylesheet for the icon category you wish to use, then include the icon definition in your markup. E.g. to use one of the play icons in css-sprite-av.</div>
-            <div class="mdl-cell mdl-cell--2-col timestamp">Sat Aug 01 2015 10:21</div>
-          </div>
-          <div class="mdl-grid">
-            <div class="mdl-cell mdl-cell--10-col logline">To use a CSS spritesheet, reference the stylesheet for the icon category you wish to use, then include the icon definition in your markup. E.g. to use one of the play icons in css-sprite-av. To use a CSS spritesheet, reference the stylesheet for the icon category you wish to use, then include the icon definition in your markup. E.g. to use one of the play icons in css-sprite-av. To use a CSS spritesheet, reference the stylesheet for the icon category you wish to use, then include the icon definition in your markup. E.g. to use one of the play icons in css-sprite-av. To use a CSS spritesheet, reference the stylesheet for the icon category you wish to use, then include the icon definition in your markup. E.g. to use one of the play icons in css-sprite-av.</div>
-            <div class="mdl-cell mdl-cell--2-col timestamp">Sat Aug 01 2015 10:21</div>
-          </div>
-          <div class="mdl-grid">
-            <div class="mdl-cell mdl-cell--10-col logline">To use a CSS spritesheet, reference the stylesheet for the icon category you wish to use, then include the icon definition in your markup. E.g. to use one of the play icons in css-sprite-av. To use a CSS spritesheet, reference the stylesheet for the icon category you wish to use, then include the icon definition in your markup. E.g. to use one of the play icons in css-sprite-av. To use a CSS spritesheet, reference the stylesheet for the icon category you wish to use, then include the icon definition in your markup. E.g. to use one of the play icons in css-sprite-av. To use a CSS spritesheet, reference the stylesheet for the icon category you wish to use, then include the icon definition in your markup. E.g. to use one of the play icons in css-sprite-av.</div>
-            <div class="mdl-cell mdl-cell--2-col timestamp">Sat Aug 01 2015 10:21</div>
-          </div>
+        <div class="page-content" id="log-holder">
         </div>
       </main>
     </div>
     <div class="page-content input-panel">
-          <div class="mdl-textfield mdl-js-textfield">
-            <textarea class="mdl-textfield__input" type="text" rows= "3" id="main_input" ></textarea>
-            <label class="mdl-textfield__label" for="main_input">Log here...</label>
-          </div>
-        </div>
+      <div class="mdl-textfield mdl-js-textfield">
+        <textarea class="mdl-textfield__input" type="text" rows= "4" id="main_input" ></textarea>
+        <label class="mdl-textfield__label" for="main_input">Log here...</label>
+      </div>
+    </div>
   </body>
 </html>
