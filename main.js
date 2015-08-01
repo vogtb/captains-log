@@ -1,39 +1,47 @@
-var app = require('app');  // Module to control application life.
-var BrowserWindow = require('browser-window');  // Module to create native browser window.
+var app = require('app');
+var ipc = require('ipc');
+var BrowserWindow = require('browser-window');
+var DEBUG = false;
 
 // Report crashes to our server.
 require('crash-reporter').start();
 
-// Keep a global reference of the window object, if you don't, the window will
-// be closed automatically when the JavaScript object is GCed.
+// Keep a global reference of the window object, to stop GCing.
 var mainWindow = null;
 
-// Quit when all windows are closed.
 app.on('window-all-closed', function() {
-  // On OS X it is common for applications and their menu bar
-  // to stay active until the user quits explicitly with Cmd + Q
   if (process.platform != 'darwin') {
     app.quit();
   }
 });
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
+
+// Interactions with DOM
+ipc.on('data_transmission', function(event, arg) {
+  console.log(arg);
+  event.returnValue = arg;
+});
+
+
 app.on('ready', function() {
-  // Create the browser window.
+
   mainWindow = new BrowserWindow({width: 1240, height: 780});
-
-  // and load the index.html of the app.
   mainWindow.loadUrl('file://' + __dirname + '/index.html');
+  if (DEBUG) {
+    mainWindow.openDevTools();
+  }
 
-  // Open the devtools.
-  mainWindow.openDevTools();
+  // //open a file
+  // var dialog = require('dialog');
+  // dialog.showOpenDialog(mainWindow, {
+  //   properties: ['openFile'],
+  //   filters: [{ name: 'readme docs', extensions: ['md']}]
+  // }, function (fileName) {
+  //   console.log(fileName);
+  // });
 
-  // Emitted when the window is closed.
   mainWindow.on('closed', function() {
-    // Dereference the window object, usually you would store windows
-    // in an array if your app supports multi windows, this is the time
-    // when you should delete the corresponding element.
+    //setting mainWindow to null releases it to be GC'd and the application will close
     mainWindow = null;
   });
 });

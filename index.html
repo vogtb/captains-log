@@ -16,10 +16,19 @@
         }
         document.head.appendChild(link);
       }
+    </script>
+    <script>
+      var ipc = require('ipc');
+      function get_data(data) {
+        return ipc.sendSync('data_transmission', data);
+      }
+    </script>
+    <script>
       loadAsset('assets/css/main.css', 'css');
       loadAsset('assets/css/normalize.css', 'css');
       loadAsset('/assets/css/material.min.css', 'css');
       loadAsset('/assets/js/material.min.js', 'js');
+      loadAsset('/assets/js/dom.js', 'js');
     </script>
   </head>
   <body>

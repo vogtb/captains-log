@@ -3,4 +3,5 @@
 *.iml
 *.pyc
 *.pyo
-*.prof
+*.profi
+node_modules/
