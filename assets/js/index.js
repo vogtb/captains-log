@@ -5,6 +5,8 @@ define(function (require) {
     loglineTemplate = Handlebars.compile($("#logline-template").html()),
     $logHolder = $('#log-holder');
 
+  $('#main_input').focus();
+
   function addLine(logObject) {
     var html = loglineTemplate(logObject);
     $logHolder.append(html);

@@ -1,6 +1,7 @@
 .menu {
   background: #2196F3;
   color: white;
+  -webkit-app-region: drag;
 }
 
 .input-panel {
@@ -28,7 +29,10 @@
   border-bottom: solid 1px #EEEEEE;
 }
 
+.logline .text {
+  font-size: 16px;
+}
+
 .timestamp {
-  font-weight: 600;
   text-align: right;
 }
