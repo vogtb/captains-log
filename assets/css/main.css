@@ -25,7 +25,7 @@
 }
 
 .logline {
-
+  border-bottom: solid 1px #EEEEEE;
 }
 
 .timestamp {

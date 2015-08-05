@@ -1,3 +1,3 @@
 #!/bin/sh
 cd
-./Electron.app/Contents/MacOS/Electron dev/captainslog/
+./Electron.app/Contents/MacOS/Electron dev/captains-log/
