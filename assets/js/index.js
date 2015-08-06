@@ -1,6 +1,7 @@
 define(function (require) {
   var $ = require('jquery'),
     moment = require('moment'),
+    yaml = require('yaml'),
     Handlebars = require('handlebars'),
     loglineTemplate = Handlebars.compile($("#logline-template").html()),
     $logHolder = $('#log-holder');
