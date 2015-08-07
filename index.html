@@ -5,32 +5,37 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <!-- Need this for asset loading with relatvie path -->
     <script>
-      var jsAssetsDirectory = require('path').join(__dirname, 'assets', 'js'),
-        assetsDirectory = require('path').join(__dirname, 'assets')
-      function loadAsset(asset, assetType) {
-        if (assetType == 'css') {
+      var path = require('path'),
+        jsAssetsDirectory = path.join(__dirname, 'assets', 'js'),
+        assetsDirectory = path.join(__dirname, 'assets'),
+        ipc = require('ipc');
+
+      function loadAsset(asset) {
+        if (asset.endsWith('css')) {
           var link = document.createElement('link');
           link.setAttribute('rel', 'stylesheet');
-          link.setAttribute('href', require('path').join(__dirname, asset));
+          link.setAttribute('href', path.join(__dirname, asset));
         } else {
           var link = document.createElement('script');
-          link.setAttribute('src', require('path').join(__dirname, asset));
+          link.setAttribute('src', path.join(__dirname, asset));
         }
         document.head.appendChild(link);
       }
+
       function loadRequires() {
         var link = document.createElement('script');
         link.setAttribute('data-main', 'assets/js/loads.js');
-        link.setAttribute('src', require('path').join(__dirname, 'assets/js/requires.js'));
+        link.setAttribute('src', path.join(__dirname, 'assets/js/requires.js'));
         document.head.appendChild(link);
       }
-      var ipc = require('ipc');
+
       function fetch_data(data) {
         return ipc.sendSync('data_transmission', data);
       }
-      loadAsset('assets/css/main.css', 'css');
-      loadAsset('/assets/css/material.min.css', 'css');
-      loadAsset('/assets/js/material.min.js', 'js');
+
+      loadAsset('/assets/css/main.css');
+      loadAsset('/assets/css/material.min.css');
+      loadAsset('/assets/js/material.min.js');
       loadRequires();
     </script>
     <script id="logline-template" type="text/x-handlebars-template">

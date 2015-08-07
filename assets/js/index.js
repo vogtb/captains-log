@@ -4,11 +4,17 @@ define(function (require) {
     yaml = require('yaml'),
     Handlebars = require('handlebars'),
     loglineTemplate = Handlebars.compile($("#logline-template").html()),
-    $logHolder = $('#log-holder');
+    $logHolder = $('#log-holder'),
+    LogFile = {
+      title: 'Name Here',
+      lines: []
+    };
 
   $('#main_input').focus();
 
   function addLine(logObject) {
+    LogFile.lines.push(logObject);
+    console.log(yaml.safeDump(LogFile));
     var html = loglineTemplate(logObject);
     $logHolder.append(html);
   }
@@ -23,6 +29,7 @@ define(function (require) {
     if (e.which == 13) {
       var time = moment();
       addLine({
+        type: 'text',
         text: getAndClearLogline(),
         timestring: time.format("ddd MMM DD YYYY, h:mm a"),
         timestamp: time.valueOf()

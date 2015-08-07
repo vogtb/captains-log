@@ -26,7 +26,6 @@ ipc.on('data_transmission', function(event, arg) {
 
 
 app.on('ready', function() {
-
   mainWindow = new BrowserWindow({width: 1240, height: 780, frame: false});
   mainWindow.loadUrl('file://' + __dirname + '/index.html');
   if (DEBUG) {
