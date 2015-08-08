@@ -4,5 +4,9 @@
   "main": "main.js",
   "devDependencies": {
     "markdown": "^0.5.0"
+  },
+  "dependencies": {
+    "intercom": "^0.5.1",
+    "js-yaml": "^3.3.1"
   }
 }

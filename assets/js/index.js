@@ -1,22 +1,23 @@
 define(function (require) {
   var $ = require('jquery'),
-    moment = require('moment'),
+    moment = require('moment')
+    _ = require('underscore'),
     yaml = require('yaml'),
     Handlebars = require('handlebars'),
     loglineTemplate = Handlebars.compile($("#logline-template").html()),
     $logHolder = $('#log-holder'),
-    LogFile = {
-      title: 'Name Here',
-      lines: []
-    };
+    LogFile = get_data('logfile');
 
   $('#main_input').focus();
 
+  _.map(LogFile.lines, function (logObject) {
+    $logHolder.append(loglineTemplate(logObject));
+  });
+
   function addLine(logObject) {
     LogFile.lines.push(logObject);
-    console.log(yaml.safeDump(LogFile));
-    var html = loglineTemplate(logObject);
-    $logHolder.append(html);
+    send_data(logObject);
+    $logHolder.append(loglineTemplate(logObject));
   }
 
   function getAndClearLogline() {
@@ -27,13 +28,16 @@ define(function (require) {
 
   $('#main_input').keyup(function (e) {
     if (e.which == 13) {
-      var time = moment();
+      var time = moment(),
+        line = getAndClearLogline();
       addLine({
-        type: 'text',
-        text: getAndClearLogline(),
-        timestring: time.format("ddd MMM DD YYYY, h:mm a"),
+        text: {
+          type: 'text',
+          line: line
+        },
+        time: time.format("ddd MMM DD YYYY, h:mm a"),
         timestamp: time.valueOf()
-      })
+      });
     }
   });
 });
