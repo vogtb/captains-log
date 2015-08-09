@@ -11,7 +11,7 @@ var app = require('app'),
   configFilePath = userDataPath + '/config.json',
   config,
   currentFilePath = userDataPath + '/example_log.yaml',
-  currentLogFileObject = yaml.safeLoad(fs.readFileSync(currentFilePath, 'utf8')),
+  currentLogFileObject,
   mainWindow = null; // Keep a global reference of the window object, to stop GCing.
 
 // Report crashes to our server.
@@ -28,7 +28,9 @@ ipc.on('send_data', function(event, data) {
   if (data.endpoint === 'addLogLine') {
     currentLogFileObject.lines.push(data.body);
     fs.writeFileSync(currentFilePath, yaml.safeDump(currentLogFileObject));
-    event.returnValue = {'status': 'OK'}; // TODO: do better error checking.
+    event.returnValue = {
+      'status': 'OK'
+    }; // TODO: do better error checking.
   } else {
     event.returnValue = {
       'status': 'ERROR',
@@ -38,14 +40,16 @@ ipc.on('send_data', function(event, data) {
 });
 
 ipc.on('get_data', function(event, data) {
-  if (data.endpoint === 'load-file') {
+  if (data.endpoint === 'loadFile') {
     //ensuring the yaml file exists
-    if (!fs.existsSync(path.join(data.body.directory, data.body.file))) {
+    if (!fs.existsSync(path.join(data.body.directory, data.body.file +'.yaml'))) {
       fs.writeFileSync(path.join(data.body.directory, data.body.file +'.yaml'), yaml.safeDump({lines: []}));
     }
+    currentFilePath = path.join(data.body.directory, data.body.file + '.yaml');
+    currentLogFileObject = yaml.safeLoad(fs.readFileSync(currentFilePath, 'utf8'));
     event.returnValue = {
       status: 'OK',
-      body: yaml.safeLoad(fs.readFileSync(path.join(data.body.directory, data.body.file + '.yaml'), 'utf8'))
+      body: currentLogFileObject
     };
   } else {
     event.returnValue = {

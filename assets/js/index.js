@@ -6,7 +6,7 @@ define(function (require) {
     Handlebars = require('handlebars'),
     loglineTemplate = Handlebars.compile($("#logline-template").html()),
     $logHolder = $('#log-holder'),
-    LogFile = {};
+    LogFile = {lines: []};
 
   Handlebars.registerHelper('breaklines', function(text) {
     text = Handlebars.Utils.escapeExpression(text);
@@ -25,9 +25,10 @@ define(function (require) {
   } else {
     $('#directions').remove();
   }
-  if (!_.isUndefined(localStorage.currentLogFile) && !_.isUndefined(localStorage.currentDirectory)) {
+  if (!_.isUndefined(localStorage.currentDirectory) && !_.isUndefined(localStorage.currentDirectory)) {
     loadLogFile();
   }
+  $('#main_input').focus();
 
   function chooseDirectory() {
     var directory = remoteCall('choose-directory');
@@ -39,29 +40,23 @@ define(function (require) {
     }
   }
 
-
   function loadLogFile() {
     var tmpLogFile = get_data({
-      'endpoint': 'load-file',
+      'endpoint': 'loadFile',
       'body': {
         'directory': localStorage.currentDirectory,
         'file': localStorage.currentLogFile
       }
     });
-    console.log(tmpLogFile);
     if (tmpLogFile.status === 'OK') {
       LogFile = tmpLogFile.body;
-    } else {
-      //TODO: handle error here
+      _.map(LogFile.lines, function (logLineObject) {
+        $logHolder.append(loglineTemplate(logLineObject));
+      });
+      $('#page-content-container').scrollTop($('#page-content-container').height() * 2);
     }
-    _.map(LogFile.lines, function (logLineObject) {
-      $logHolder.append(loglineTemplate(logLineObject));
-    });
-    $('#page-content-container').scrollTop($('#page-content-container').height() * 2);
   }
 
-
-  // $('#main_input').focus();
 
   function addLine(logLineObject) {
     LogFile.lines.push(logLineObject);
@@ -72,24 +67,24 @@ define(function (require) {
     $logHolder.append(loglineTemplate(logLineObject));
   }
 
-  // function getAndClearLogline() {
-  //   var line = $('#main_input').val();
-  //   $('#main_input').val('');
-  //   return line;
-  // }
+  function getAndClearLogline() {
+    var line = $('#main_input').val();
+    $('#main_input').val('');
+    return line;
+  }
 
-  // $('#main_input').keyup(function (e) {
-  //   if (e.which == 13) {
-  //     var time = moment(),
-  //       line = getAndClearLogline();
-  //     addLine({
-  //       text: {
-  //         type: 'text',
-  //         line: line
-  //       },
-  //       time: time.format("ddd MMM DD YYYY, h:mm a"),
-  //       timestamp: time.valueOf()
-  //     });
-  //   }
-  // });
+  $('#main_input').keyup(function (e) {
+    if (e.which == 13) {
+      var time = moment(),
+        line = getAndClearLogline();
+      addLine({
+        text: {
+          type: 'text',
+          line: line
+        },
+        time: time.format("ddd MMM DD YYYY, h:mm a"),
+        timestamp: time.valueOf()
+      });
+    }
+  });
 });
