@@ -34,7 +34,7 @@ i.rename {
 }
 
 .logline {
-  border-bottom: solid 1px #EEEEEE;
+  border-top: solid 1px #EEEEEE;
 }
 
 /*needs to be dynamic, but it works for now.*/

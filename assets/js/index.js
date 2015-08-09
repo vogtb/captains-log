@@ -3,7 +3,7 @@ define(function (require) {
     moment = require('moment')
     _ = require('underscore'),
     yaml = require('yaml'),
-    LOCAL_MODE = true,
+    local_mode = true,
     Handlebars = require('handlebars'),
     loglineTemplate = Handlebars.compile($("#logline-template").html()),
     $logHolder = $('#log-holder'),
@@ -15,10 +15,9 @@ define(function (require) {
     return new Handlebars.SafeString(text);
   });
 
-console.log(LOCAL_MODE)
   //MAIN LOGIC
   if (!_.isUndefined(localStorage.currentLogFile)) {
-    LOCAL_MODE = false;
+    local_mode = false;
   }
   if (_.isUndefined(localStorage.currentDirectory)) {
     $('#directions').removeClass('hidden');
@@ -40,7 +39,7 @@ console.log(LOCAL_MODE)
   }
 
   function loadLogFile() {
-    if (LOCAL_MODE) {
+    if (local_mode) {
       if (_.isUndefined(localStorage.localLogFile)) {
         localStorage.localLogFile = JSON.stringify({lines: []});
       }
@@ -63,7 +62,7 @@ console.log(LOCAL_MODE)
 
   function addLine(logLineObject) {
     LogFile.lines.push(logLineObject);
-    if (LOCAL_MODE) {
+    if (local_mode) {
       localStorage.localLogFile = JSON.stringify(LogFile);
     } else {
       var result = send_data({

@@ -56,20 +56,20 @@
     <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
       <header class="mdl-layout__header">
         <div class="mdl-layout__header-row menu">
-          <button class="mdl-button mdl-js-button mdl-button--icon">
+          <button class="mdl-button mdl-js-button mdl-button--icon" id="close">
             <i class="material-icons">close</i>
           </button>
           <div class="mdl-layout-spacer"></div>
-          <i class="material-icons">warning</i>
+          <i class="material-icons warning" id="warning">warning</i>
           <span class="mdl-layout-title" id="filename">untitlted_log_file</span>
-          <button class="mdl-button mdl-js-button mdl-button--icon">
+          <button class="mdl-button mdl-js-button mdl-button--icon" id="rename">
             <i class="material-icons rename">create</i>
           </button>
           <div class="mdl-layout-spacer"></div>
-          <button class="mdl-button mdl-js-button mdl-button--icon">
+          <button class="mdl-button mdl-js-button mdl-button--icon" id="change-directory">
             <i class="material-icons">folder_open</i>
           </button>
-          <button class="mdl-button mdl-js-button mdl-button--icon">
+          <button class="mdl-button mdl-js-button mdl-button--icon" id="new">
             <i class="material-icons">add</i>
           </button>
         </div>
@@ -94,6 +94,13 @@
         <textarea class="mdl-textfield__input" type="text" rows= "4" id="main_input"></textarea>
         <label class="mdl-textfield__label" for="main_input">Log here...</label>
       </div>
+    </div>
+    <div id="tool-tips">
+      <div class="mdl-tooltip" for="close">Quit Application</div>
+      <div class="mdl-tooltip" for="warning">WARNING: an untitled logfile will not be saved to disk</div>
+      <div class="mdl-tooltip" for="rename">Name this log file</div>
+      <div class="mdl-tooltip" for="change-directory">Change the default directory to save log files to</div>
+      <div class="mdl-tooltip" for="new">New logfile</div>
     </div>
   </body>
 </html>
