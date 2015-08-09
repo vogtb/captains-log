@@ -6,16 +6,7 @@ define(function (require) {
     Handlebars = require('handlebars'),
     loglineTemplate = Handlebars.compile($("#logline-template").html()),
     $logHolder = $('#log-holder'),
-    State = {
-      directory: false,
-      file: false
-    };
-    // LogFile = get_data({
-    //   'endpoint': 'logfile',
-    //   'body': {
-    //     'file': localStorage.currentLogFile
-    //   }
-    // }).body; // TODO: error-check this.
+    LogFile = {};
 
   Handlebars.registerHelper('breaklines', function(text) {
     text = Handlebars.Utils.escapeExpression(text);
@@ -24,13 +15,19 @@ define(function (require) {
   });
 
 
+  //MAIN LOGIC
+  if (_.isUndefined(localStorage.currentLogFile)) {
+    localStorage.currentLogFile = 'untitled_log_file';
+  }
   if (_.isUndefined(localStorage.currentDirectory)) {
     $('#directions').removeClass('hidden');
     $('#choose-directory').click(chooseDirectory);
   } else {
     $('#directions').remove();
   }
-
+  if (!_.isUndefined(localStorage.currentLogFile) && !_.isUndefined(localStorage.currentDirectory)) {
+    loadLogFile();
+  }
 
   function chooseDirectory() {
     var directory = remoteCall('choose-directory');
@@ -43,21 +40,37 @@ define(function (require) {
   }
 
 
+  function loadLogFile() {
+    var tmpLogFile = get_data({
+      'endpoint': 'load-file',
+      'body': {
+        'directory': localStorage.currentDirectory,
+        'file': localStorage.currentLogFile
+      }
+    });
+    console.log(tmpLogFile);
+    if (tmpLogFile.status === 'OK') {
+      LogFile = tmpLogFile.body;
+    } else {
+      //TODO: handle error here
+    }
+    _.map(LogFile.lines, function (logLineObject) {
+      $logHolder.append(loglineTemplate(logLineObject));
+    });
+    $('#page-content-container').scrollTop($('#page-content-container').height() * 2);
+  }
+
+
   // $('#main_input').focus();
 
-  // _.map(LogFile.lines, function (logLineObject) {
-  //   $logHolder.append(loglineTemplate(logLineObject));
-  // });
-  // $('#page-content-container').scrollTop($('#page-content-container').height() * 2);
-
-  // function addLine(logLineObject) {
-  //   LogFile.lines.push(logLineObject);
-  //   var result = send_data({
-  //     'endpoint': 'addLogLine',
-  //     'body': logLineObject
-  //   });
-  //   $logHolder.append(loglineTemplate(logLineObject));
-  // }
+  function addLine(logLineObject) {
+    LogFile.lines.push(logLineObject);
+    var result = send_data({
+      'endpoint': 'addLogLine',
+      'body': logLineObject
+    });
+    $logHolder.append(loglineTemplate(logLineObject));
+  }
 
   // function getAndClearLogline() {
   //   var line = $('#main_input').val();

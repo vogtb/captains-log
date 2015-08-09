@@ -3,6 +3,7 @@ var app = require('app'),
   ipc = require('ipc'),
   yaml = require('js-yaml'),
   _ = require('underscore'),
+  path = require('path'),
   BrowserWindow = require('browser-window'),
   dialog = require('dialog'),
   reporter = require('crash-reporter'),
@@ -18,9 +19,7 @@ reporter.start();
 
 // If the config file doesn't exist we need to write it.
 if (!fs.existsSync(configFilePath)) {
-  fs.writeFileSync(configFilePath, JSON.stringify({
-    logDirectory: false
-  }));
+  fs.writeFileSync(configFilePath, JSON.stringify({}));
 }
 config = require(configFilePath);
 
@@ -39,10 +38,14 @@ ipc.on('send_data', function(event, data) {
 });
 
 ipc.on('get_data', function(event, data) {
-  if (data.endpoint === 'logfile') {
+  if (data.endpoint === 'load-file') {
+    //ensuring the yaml file exists
+    if (!fs.existsSync(path.join(data.body.directory, data.body.file))) {
+      fs.writeFileSync(path.join(data.body.directory, data.body.file +'.yaml'), yaml.safeDump({lines: []}));
+    }
     event.returnValue = {
       status: 'OK',
-      body: currentLogFileObject
+      body: yaml.safeLoad(fs.readFileSync(path.join(data.body.directory, data.body.file + '.yaml'), 'utf8'))
     };
   } else {
     event.returnValue = {
@@ -71,9 +74,7 @@ ipc.on('choose-directory', function(event, data) {
 });
 
 app.on('window-all-closed', function() {
-  if (process.platform != 'darwin') {
-    app.quit();
-  }
+  app.quit();
 });
 
 app.on('ready', function() {
@@ -83,8 +84,7 @@ app.on('ready', function() {
     frame: false
   });
   mainWindow.loadUrl('file://' + __dirname + '/index.html');
-
   mainWindow.on('closed', function() {
-    mainWindow = null; //setting mainWindow to null releases it to be GC'd and the application will close
+    mainWindow = null;
   });
 });
