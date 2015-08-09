@@ -8,7 +8,7 @@ define(function (require) {
     $logHolder = $('#log-holder'),
     LogFile = get_data({
       'endpoint': 'logfile'
-    }).body;
+    }).body; // TODO: error-check this.
 
     Handlebars.registerHelper('breaklines', function(text) {
       text = Handlebars.Utils.escapeExpression(text);
@@ -18,17 +18,18 @@ define(function (require) {
 
   $('#main_input').focus();
 
-  _.map(LogFile.lines, function (logObject) {
-    $logHolder.append(loglineTemplate(logObject));
+  _.map(LogFile.lines, function (logLineObject) {
+    $logHolder.append(loglineTemplate(logLineObject));
   });
+  $('#page-content-container').scrollTop($('#page-content-container').height() * 2);
 
-  function addLine(logObject) {
-    LogFile.lines.push(logObject);
+  function addLine(logLineObject) {
+    LogFile.lines.push(logLineObject);
     var result = send_data({
       'endpoint': 'addLogLine',
-      'body': logObject
+      'body': logLineObject
     });
-    $logHolder.append(loglineTemplate(logObject));
+    $logHolder.append(loglineTemplate(logLineObject));
   }
 
   function getAndClearLogline() {
