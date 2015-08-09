@@ -93,4 +93,9 @@ define(function (require) {
       });
     }
   });
+
+
+  // $('#warning,#edit-name').click(function() {
+    
+  // });
 });
