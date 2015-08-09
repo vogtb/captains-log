@@ -2,8 +2,6 @@
   <head>
     <title>Captain's Log</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- TODO: download these icons and load them from disk to avoid network issues. -->
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <script>
       var path = require('path'),
         jsAssetsDirectory = path.join(__dirname, 'assets', 'js'),
@@ -44,7 +42,7 @@
     </script>
     <script id="logline-template" type="text/x-handlebars-template">
       <div class="mdl-grid logline">
-        <div class="mdl-cell mdl-cell--10-col text">{{ text.line }}</div>
+        <div class="mdl-cell mdl-cell--10-col text">{{ breaklines text.line }}</div>
         <div class="mdl-cell mdl-cell--2-col timestamp" timestamp="{{ timestamp }}">{{ time }}</div>
       </div>
     </script>

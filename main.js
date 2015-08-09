@@ -23,7 +23,8 @@ app.on('window-all-closed', function() {
 
 ipc.on('send_data', function(event, data) {
   currentLogFileObject.lines.push(data);
-  // TODO: write to disk
+  var yamlText = yaml.safeDump(currentLogFileObject);
+  fs.writeFileSync(currentFilePath, yamlText);
   event.returnValue = {'status': 'OK'};
 });
 

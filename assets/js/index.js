@@ -8,6 +8,12 @@ define(function (require) {
     $logHolder = $('#log-holder'),
     LogFile = get_data('logfile');
 
+    Handlebars.registerHelper('breaklines', function(text) {
+      text = Handlebars.Utils.escapeExpression(text);
+      text = text.replace(/(\r\n|\n|\r)/gm, '<br>');
+      return new Handlebars.SafeString(text);
+    });
+
   $('#main_input').focus();
 
   _.map(LogFile.lines, function (logObject) {
