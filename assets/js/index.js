@@ -6,7 +6,9 @@ define(function (require) {
     Handlebars = require('handlebars'),
     loglineTemplate = Handlebars.compile($("#logline-template").html()),
     $logHolder = $('#log-holder'),
-    LogFile = get_data('logfile');
+    LogFile = get_data({
+      'endpoint': 'logfile'
+    }).body;
 
     Handlebars.registerHelper('breaklines', function(text) {
       text = Handlebars.Utils.escapeExpression(text);
@@ -22,7 +24,10 @@ define(function (require) {
 
   function addLine(logObject) {
     LogFile.lines.push(logObject);
-    send_data(logObject);
+    var result = send_data({
+      'endpoint': 'addLogLine',
+      'body': logObject
+    });
     $logHolder.append(loglineTemplate(logObject));
   }
 

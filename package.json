@@ -7,6 +7,7 @@
   },
   "dependencies": {
     "intercom": "^0.5.1",
-    "js-yaml": "^3.3.1"
+    "js-yaml": "^3.3.1",
+    "underscore": "^1.8.3"
   }
 }
