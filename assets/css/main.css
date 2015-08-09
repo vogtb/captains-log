@@ -4,6 +4,14 @@
   -webkit-app-region: drag;
 }
 
+/*overriding mdl*/
+.mdl-layout__header-row.menu {
+  padding: 0 16px 0 16px;
+}
+i.rename {
+  font-size: 18px;
+}
+
 .input-panel {
   height: 16%;
   width: 96%;
