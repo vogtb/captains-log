@@ -53,6 +53,23 @@ ipc.on('get_data', function(event, data) {
 });
 
 
+ipc.on('choose-directory', function(event, data) {
+  dialog.showOpenDialog(mainWindow, {
+    properties: ['openDirectory'],
+    filters: []
+  }, function (directoryListing) {
+    if (!_.isUndefined(directoryListing)) {
+      if (!_.isUndefined(directoryListing[0])) {
+        event.returnValue = directoryListing[0];
+      } else {
+        event.returnValue = false;
+      }
+    } else {
+      event.returnValue = false;
+    }
+  });
+});
+
 app.on('window-all-closed', function() {
   if (process.platform != 'darwin') {
     app.quit();
@@ -66,20 +83,6 @@ app.on('ready', function() {
     frame: false
   });
   mainWindow.loadUrl('file://' + __dirname + '/index.html');
-
-  // We need to set a directory to where log files will be written
-  if (!config.logDirectory) {
-    dialog.showOpenDialog(mainWindow, {
-      properties: ['openDirectory'],
-      filters: []
-    }, function (directoryListing) {
-      //TODO: do some error checking here to make sure that the user doesn't cancel out of the picker.
-      if (!_.isUndefined(directoryListing[0])) {
-        config.logDirectory = directoryListing[0];
-        fs.writeFileSync(configFilePath, JSON.stringify(config));
-      }
-    });
-  }
 
   mainWindow.on('closed', function() {
     mainWindow = null; //setting mainWindow to null releases it to be GC'd and the application will close

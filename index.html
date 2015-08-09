@@ -2,6 +2,7 @@
   <head>
     <title>Captain's Log</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <script>
       var path = require('path'),
         jsAssetsDirectory = path.join(__dirname, 'assets', 'js'),
@@ -31,6 +32,10 @@
         return ipc.sendSync('send_data', data);
       }
 
+      function remoteCall(callString) {
+        return ipc.sendSync(callString, callString);
+      }
+
       function get_data(data) {
         return ipc.sendSync('get_data', data);
       }
@@ -51,17 +56,22 @@
     <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
       <header class="mdl-layout__header">
         <div class="mdl-layout__header-row menu">
-          <span class="mdl-layout-title">Logfile name goes here</span>
+          <span class="mdl-layout-title" id="file-title">untitlted_log_file</span>
           <div class="mdl-layout-spacer"></div>
-          <nav class="mdl-navigation">
-            <button class="mdl-button mdl-js-button mdl-button--icon open">
-              <i class="material-icons">folder_open</i>
-            </button>
-          </nav>
         </div>
       </header>
       <main class="mdl-layout__content" id="page-content-container">
         <div class="page-content" id="log-holder">
+          <div class="mdl-grid hidden" id="directions">
+            <div class="mdl-cell mdl-cell--3-col"></div>
+            <div class="mdl-cell mdl-cell--6-col">
+              <h5>Where would you like to store the logs?</h5>
+              <button class="mdl-button mdl-js-button mdl-button--raised" id="choose-directory">
+                Choose Directory
+              </button>
+            </div>
+            <div class="mdl-cell mdl-cell--3-col"></div>
+          </div>
         </div>
       </main>
     </div>
