@@ -56,12 +56,8 @@
     <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
       <header class="mdl-layout__header">
         <div class="mdl-layout__header-row menu">
-          <button class="mdl-button mdl-js-button mdl-button--icon" id="close">
-            <i class="material-icons">close</i>
-          </button>
-          <div class="mdl-layout-spacer"></div>
-          <i class="material-icons warning" id="warning">warning</i>
-          <span class="mdl-layout-title filename" id="filename" contentEditable="true">untitlted_log_file</span>
+          <span class="mdl-layout-title filename hidden" id="filename" contentEditable="true">untitlted_log_file</span>
+          <i class="material-icons warning hidden" id="warning">warning</i>
           <div class="mdl-layout-spacer"></div>
           <button class="mdl-button mdl-js-button mdl-button--icon" id="change-directory">
             <i class="material-icons">folder_open</i>
@@ -74,14 +70,12 @@
       <main class="mdl-layout__content" id="page-content-container">
         <div class="page-content" id="log-holder">
           <div class="mdl-grid hidden" id="directions">
-            <div class="mdl-cell mdl-cell--3-col"></div>
-            <div class="mdl-cell mdl-cell--6-col">
+            <div class="mdl-cell mdl-cell--12-col">
               <h5>Where would you like to store the logs?</h5>
               <button class="mdl-button mdl-js-button mdl-button--raised" id="choose-directory">
                 Choose Directory
               </button>
             </div>
-            <div class="mdl-cell mdl-cell--3-col"></div>
           </div>
         </div>
       </main>

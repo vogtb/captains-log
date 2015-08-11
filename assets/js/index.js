@@ -18,6 +18,8 @@ define(function (require) {
   //MAIN LOGIC
   if (!_.isUndefined(localStorage.currentLogFile)) {
     local_mode = false;
+  } else {
+    $('#warning').removeClass('hidden');
   }
   if (_.isUndefined(localStorage.currentDirectory)) {
     $('#directions').removeClass('hidden');
@@ -27,6 +29,7 @@ define(function (require) {
   }
   loadLogFile();
   $('#main_input').focus();
+  $('#filename').removeClass('hidden');
 
   function chooseDirectory() {
     var directory = remoteCall('choose-directory');
@@ -59,7 +62,6 @@ define(function (require) {
     $('#page-content-container').scrollTop($('#page-content-container').height() * 2);
   }
 
-
   function addLine(logLineObject) {
     LogFile.lines.push(logLineObject);
     if (local_mode) {
@@ -79,7 +81,7 @@ define(function (require) {
     return line;
   }
 
-  $('#main_input').keyup(function (e) {
+  $('#main_input').keydown(function (e) {
     if (e.which == 13) {
       var time = moment(),
         line = getAndClearLogline();
@@ -94,8 +96,31 @@ define(function (require) {
     }
   });
 
+  $('#filename').keypress(function (event) {
+    if (event.which !== 0) {
+      var character = String.fromCharCode(event.which);
+      if (event.which === 13) {
+        $('#change-directory').focus();
+      }
+      return !/[^a-zA-Z0-9]/.test(character);
+    }
+  });
+  $('#filename').on('focusout', function (event) {
+    if ($(this).text() != 'untitlted_log_file') {
+      updateState();
+    }
+  });
 
-  // $('#warning,#edit-name').click(function() {
-    
-  // });
+  function updateState() {
+    if (local_mode) {
+      localStorage.currentLogFile = $('#filename').text();
+      local_mode = false;
+      $('#warning').addClass('hidden');
+      var result = send_data({
+        'endpoint': 'addManyLogLine',
+        'body': LogFile.lines
+      });
+    }
+  }
+
 });

@@ -30,7 +30,13 @@ ipc.on('send_data', function(event, data) {
     fs.writeFileSync(currentFilePath, yaml.safeDump(currentLogFileObject));
     event.returnValue = {
       'status': 'OK'
-    }; // TODO: do better error checking.
+    };
+  } else if (data.endpoint === 'addManyLogLine') {
+    currentLogFileObject.lines = data.body;
+    fs.writeFileSync(currentFilePath, yaml.safeDump(currentLogFileObject));
+    event.returnValue = {
+      'status': 'OK'
+    };
   } else {
     event.returnValue = {
       'status': 'ERROR',
@@ -84,8 +90,7 @@ app.on('window-all-closed', function() {
 app.on('ready', function() {
   mainWindow = new BrowserWindow({
     width: 1240,
-    height: 780,
-    frame: false
+    height: 780
   });
   mainWindow.loadUrl('file://' + __dirname + '/index.html');
   mainWindow.on('closed', function() {

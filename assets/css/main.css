@@ -1,7 +1,6 @@
 .menu {
   background: #2196F3;
   color: white;
-  -webkit-app-region: drag;
 }
 
 .menu .filename {
@@ -47,7 +46,7 @@ i.rename {
 }
 
 .logline .text {
-  font-size: 16px;
+  font-size: 15px;
 }
 
 .timestamp {
