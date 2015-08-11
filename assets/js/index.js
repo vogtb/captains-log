@@ -15,29 +15,37 @@ define(function (require) {
     return new Handlebars.SafeString(text);
   });
 
-  //MAIN LOGIC
-  if (_.isUndefined(localStorage.currentLogFile)) {
-    $('#warning').removeClass('hidden');
-  } else {
-    local_mode = false;
-    $('#filename').html(localStorage.currentLogFile);
-  }
-  if (_.isUndefined(localStorage.currentDirectory)) {
-    $('#directions').removeClass('hidden');
-    $('#choose-directory').click(chooseDirectory);
-  } else {
-    $('#directions').remove();
-  }
+  readyForUser();
+  ensureDirectory();
+  setMode();
   loadLogFile();
-  $('#main-input').focus();
-  $('#filename').removeClass('hidden');
+  renderLogFile();
+
+
+  function ensureDirectory() {
+    if (_.isUndefined(localStorage.directory)) {
+      $('#directions').removeClass('hidden');
+      $('#choose-directory').click(chooseDirectory);
+    } else {
+      $('#directions').remove();
+    }
+  }
+
+  function setMode() {
+    local_mode = _.isUndefined(localStorage.directory) || _.isUndefined(localStorage.file);
+  }
+
+  function readyForUser() {
+    $('#main-input').focus();
+    $('#filename').removeClass('hidden'); 
+  }
 
   function chooseDirectory() {
     var directory = remoteCall('choose-directory');
     if (!directory) {
       alert("I'm sorry, it doesn't look like you chose valid a directory. \nPlease try again.")
     } else {
-      localStorage.currentDirectory = directory;
+      localStorage.directory = directory;
       $('#directions').remove();
     }
   }
@@ -49,14 +57,15 @@ define(function (require) {
       }
       LogFile = JSON.parse(localStorage.localLogFile);
     } else {
-      LogFile = get_data({
-        'endpoint': 'loadFile',
-        'body': {
-          'directory': localStorage.currentDirectory,
-          'file': localStorage.currentLogFile
-        }
-      }).body;
-    } 
+      LogFile = yaml.load(getData({
+        'endpoint': 'getFile',
+        'directory': localStorage.directory,
+        'file': localStorage.file
+      }));
+    }
+  }
+
+  function renderLogFile() {
     _.map(LogFile.lines, function (logLineObject) {
       $logHolder.append(loglineTemplate(logLineObject));
     });
@@ -65,18 +74,6 @@ define(function (require) {
 
   function addLine(logLineObject) {
     LogFile.lines.push(logLineObject);
-    if (local_mode) {
-      localStorage.localLogFile = JSON.stringify(LogFile);
-    } else {
-      var result = send_data({
-        'endpoint': 'addLogLine',
-        'body': {
-          'directory': localStorage.currentDirectory,
-          'file': localStorage.currentLogFile,
-          'line': logLineObject
-        }
-      });
-    }
     $logHolder.append(loglineTemplate(logLineObject));
   }
 
@@ -87,13 +84,12 @@ define(function (require) {
   }
 
   $('#main-input').keydown(function (e) {
-    if (e.which == 13) {
-      var time = moment(),
-        line = getAndClearLogline();
+    if (e.which === 13) {
+      var time = moment();
       addLine({
         text: {
           type: 'text',
-          line: line
+          line: getAndClearLogline()
         },
         time: time.format("ddd MMM DD YYYY, h:mm a"),
         timestamp: time.valueOf()
@@ -112,35 +108,9 @@ define(function (require) {
   });
   $('#filename').on('focusout', function (event) {
     if ($(this).text() != 'untitlted_log_file') {
-      updateState();
+      // the user has *possibly* switched out of local mode and is now saving to disk.
     }
   });
 
-  function updateState() {
-    if (local_mode) {
-      localStorage.currentLogFile = $('#filename').text();
-      local_mode = false;
-      $('#warning').addClass('hidden');
-      send_data({
-        'endpoint': 'addManyLogLine',
-        'body': {
-          'lines': LogFile.lines,
-          'file': localStorage.currentLogFile,
-          'directory': localStorage.currentDirectory
-        }
-      });
-    } else {
-      // changing the name of the file...
-      localStorage.currentLogFile = $('#filename').text();
-      console.log('changing name of log file.')
-      send_data({
-        'endpoint': 'changeFileName',
-        'body': {
-          'file': localStorage.currentLogFile,
-          'directory': localStorage.currentDirectory
-        }
-      });
-    }
-  }
 
 });

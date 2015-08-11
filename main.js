@@ -14,50 +14,29 @@ var app = require('app'),
 reporter.start();
 
 
-ipc.on('send_data', function(event, data) {
+ipc.on('sendData', function(event, data) {
   switch (data.endpoint) {
-    case 'addLogLine':
-      LogFile.lines.push(data.body.line);
-      fs.writeFileSync(path.join(data.body.directory, data.body.file), yaml.safeDump(LogFile));
-      event.returnValue = {
-        'status': 'OK'
-      };
-    case 'addManyLogLine':
-      LogFile.lines = data.body.lines;
-      fs.writeFileSync(path.join(data.body.directory, data.body.file), yaml.safeDump(LogFile));
-      event.returnValue = {
-        'status': 'OK'
-      };
-    case 'changeFileName':
-      fs.writeFileSync(path.join(data.body.directory, data.body.file + 'yaml'), yaml.safeDump(LogFile));
-      event.returnValue = {
-        'status': 'OK'
-      };
+    case 'getFile':
+      event.returnValue = 'data here';
+    case 'checkDirectoryExists':
+      event.returnValue = 'data here';
+    case 'checkFileExists':
+      event.returnValue = 'data here';
     default:
-      event.returnValue = {
-        'status': 'ERROR',
-        'message': 'Undefined endpoint.'
-      };
+      event.returnValue = 'declare error here';
   }
 });
 
-ipc.on('get_data', function(event, data) {
-  if (data.endpoint === 'loadFile') {
-    //ensuring the yaml file exists
-    if (!fs.existsSync(path.join(data.body.directory, data.body.file +'.yaml'))) {
-      fs.writeFileSync(path.join(data.body.directory, data.body.file +'.yaml'), yaml.safeDump({lines: []}));
-    }
-    currentFilePath = path.join(data.body.directory, data.body.file + '.yaml');
-    LogFile = yaml.safeLoad(fs.readFileSync(currentFilePath, 'utf8'));
-    event.returnValue = {
-      status: 'OK',
-      body: LogFile
-    };
-  } else {
-    event.returnValue = {
-      'status': 'ERROR',
-      'message': 'Undefined endpoint.'
-    };
+ipc.on('getData', function(event, data) {
+  switch (data.endpoint) {
+    case 'getFile':
+      event.returnValue = 'data here';
+    case 'checkDirectoryExists':
+      event.returnValue = 'data here';
+    case 'checkFileExists':
+      event.returnValue = 'data here';
+    default:
+      event.returnValue = 'declare error here';
   }
 });
 
