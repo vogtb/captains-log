@@ -16,10 +16,11 @@ define(function (require) {
   });
 
   //MAIN LOGIC
-  if (!_.isUndefined(localStorage.currentLogFile)) {
-    local_mode = false;
-  } else {
+  if (_.isUndefined(localStorage.currentLogFile)) {
     $('#warning').removeClass('hidden');
+  } else {
+    local_mode = false;
+    $('#filename').html(localStorage.currentLogFile);
   }
   if (_.isUndefined(localStorage.currentDirectory)) {
     $('#directions').removeClass('hidden');
@@ -28,7 +29,7 @@ define(function (require) {
     $('#directions').remove();
   }
   loadLogFile();
-  $('#main_input').focus();
+  $('#main-input').focus();
   $('#filename').removeClass('hidden');
 
   function chooseDirectory() {
@@ -69,19 +70,23 @@ define(function (require) {
     } else {
       var result = send_data({
         'endpoint': 'addLogLine',
-        'body': logLineObject
+        'body': {
+          'directory': localStorage.currentDirectory,
+          'file': localStorage.currentLogFile,
+          'line': logLineObject
+        }
       });
     }
     $logHolder.append(loglineTemplate(logLineObject));
   }
 
   function getAndClearLogline() {
-    var line = $('#main_input').val();
-    $('#main_input').val('');
+    var line = $('#main-input').val();
+    $('#main-input').val('');
     return line;
   }
 
-  $('#main_input').keydown(function (e) {
+  $('#main-input').keydown(function (e) {
     if (e.which == 13) {
       var time = moment(),
         line = getAndClearLogline();
@@ -100,7 +105,7 @@ define(function (require) {
     if (event.which !== 0) {
       var character = String.fromCharCode(event.which);
       if (event.which === 13) {
-        $('#change-directory').focus();
+        $('#main-input').focus();
       }
       return !/[^a-zA-Z0-9]/.test(character);
     }
@@ -116,9 +121,24 @@ define(function (require) {
       localStorage.currentLogFile = $('#filename').text();
       local_mode = false;
       $('#warning').addClass('hidden');
-      var result = send_data({
+      send_data({
         'endpoint': 'addManyLogLine',
-        'body': LogFile.lines
+        'body': {
+          'lines': LogFile.lines,
+          'file': localStorage.currentLogFile,
+          'directory': localStorage.currentDirectory
+        }
+      });
+    } else {
+      // changing the name of the file...
+      localStorage.currentLogFile = $('#filename').text();
+      console.log('changing name of log file.')
+      send_data({
+        'endpoint': 'changeFileName',
+        'body': {
+          'file': localStorage.currentLogFile,
+          'directory': localStorage.currentDirectory
+        }
       });
     }
   }

@@ -7,41 +7,37 @@ var app = require('app'),
   BrowserWindow = require('browser-window'),
   dialog = require('dialog'),
   reporter = require('crash-reporter'),
-  userDataPath = app.getPath('userData'),
-  configFilePath = userDataPath + '/config.json',
-  config,
-  currentFilePath = userDataPath + '/example_log.yaml',
-  currentLogFileObject,
+  LogFile = {lines: []},
   mainWindow = null; // Keep a global reference of the window object, to stop GCing.
 
 // Report crashes to our server.
 reporter.start();
 
-// If the config file doesn't exist we need to write it.
-if (!fs.existsSync(configFilePath)) {
-  fs.writeFileSync(configFilePath, JSON.stringify({}));
-}
-config = require(configFilePath);
-
 
 ipc.on('send_data', function(event, data) {
-  if (data.endpoint === 'addLogLine') {
-    currentLogFileObject.lines.push(data.body);
-    fs.writeFileSync(currentFilePath, yaml.safeDump(currentLogFileObject));
-    event.returnValue = {
-      'status': 'OK'
-    };
-  } else if (data.endpoint === 'addManyLogLine') {
-    currentLogFileObject.lines = data.body;
-    fs.writeFileSync(currentFilePath, yaml.safeDump(currentLogFileObject));
-    event.returnValue = {
-      'status': 'OK'
-    };
-  } else {
-    event.returnValue = {
-      'status': 'ERROR',
-      'message': 'Undefined endpoint.'
-    };
+  switch (data.endpoint) {
+    case 'addLogLine':
+      LogFile.lines.push(data.body.line);
+      fs.writeFileSync(path.join(data.body.directory, data.body.file), yaml.safeDump(LogFile));
+      event.returnValue = {
+        'status': 'OK'
+      };
+    case 'addManyLogLine':
+      LogFile.lines = data.body.lines;
+      fs.writeFileSync(path.join(data.body.directory, data.body.file), yaml.safeDump(LogFile));
+      event.returnValue = {
+        'status': 'OK'
+      };
+    case 'changeFileName':
+      fs.writeFileSync(path.join(data.body.directory, data.body.file + 'yaml'), yaml.safeDump(LogFile));
+      event.returnValue = {
+        'status': 'OK'
+      };
+    default:
+      event.returnValue = {
+        'status': 'ERROR',
+        'message': 'Undefined endpoint.'
+      };
   }
 });
 
@@ -52,10 +48,10 @@ ipc.on('get_data', function(event, data) {
       fs.writeFileSync(path.join(data.body.directory, data.body.file +'.yaml'), yaml.safeDump({lines: []}));
     }
     currentFilePath = path.join(data.body.directory, data.body.file + '.yaml');
-    currentLogFileObject = yaml.safeLoad(fs.readFileSync(currentFilePath, 'utf8'));
+    LogFile = yaml.safeLoad(fs.readFileSync(currentFilePath, 'utf8'));
     event.returnValue = {
       status: 'OK',
-      body: currentLogFileObject
+      body: LogFile
     };
   } else {
     event.returnValue = {
