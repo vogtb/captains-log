@@ -3,6 +3,10 @@
   color: white;
 }
 
+.menu .directory {
+  padding-right: 16px;
+}
+
 /*overriding mdl*/
 .mdl-layout__header-row.menu {
   padding: 0 16px 0 16px;

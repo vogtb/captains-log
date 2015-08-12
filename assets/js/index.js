@@ -41,7 +41,10 @@ define(function (require) {
     }
     if (local_mode) {
       $('#warning').removeClass('hidden');
+    } else {
+      $('#directory').text(localStorage.directory + '/' + localStorage.file + '.yaml');
     }
+    $('#directory').removeClass('hidden');
     $('#filename').removeClass('hidden'); 
   }
 
@@ -119,7 +122,11 @@ define(function (require) {
   });
   $('#filename').on('focusout', function (event) {
     if (document.activeElement.id !== 'filename' && $('#filename').text() != 'untitlted_log_file') {
-      local_mode = false;
+      if (!_.isUndefined(localStorage.directory)) {
+        $('#directory').text(localStorage.directory + '/' + localStorage.file + '.yaml');
+        $('#directory').removeClass('hidden');
+        local_mode = false;
+      }
       localStorage.file = $(this).text();
       $('#warning').addClass('hidden');
       saveFile();
