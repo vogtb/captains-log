@@ -14,33 +14,6 @@ var app = require('app'),
 reporter.start();
 
 
-ipc.on('sendData', function(event, data) {
-  switch (data.endpoint) {
-    case 'getFile':
-      event.returnValue = 'data here';
-    case 'checkDirectoryExists':
-      event.returnValue = 'data here';
-    case 'checkFileExists':
-      event.returnValue = 'data here';
-    default:
-      event.returnValue = 'declare error here';
-  }
-});
-
-ipc.on('getData', function(event, data) {
-  switch (data.endpoint) {
-    case 'getFile':
-      event.returnValue = 'data here';
-    case 'checkDirectoryExists':
-      event.returnValue = 'data here';
-    case 'checkFileExists':
-      event.returnValue = 'data here';
-    default:
-      event.returnValue = 'declare error here';
-  }
-});
-
-
 ipc.on('choose-directory', function(event, data) {
   dialog.showOpenDialog(mainWindow, {
     properties: ['openDirectory'],

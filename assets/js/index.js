@@ -15,12 +15,11 @@ define(function (require) {
     return new Handlebars.SafeString(text);
   });
 
-  readyForUser();
   ensureDirectory();
   setMode();
   loadLogFile();
   renderLogFile();
-
+  readyForUser();
 
   function ensureDirectory() {
     if (_.isUndefined(localStorage.directory)) {
@@ -37,13 +36,19 @@ define(function (require) {
 
   function readyForUser() {
     $('#main-input').focus();
+    if (!_.isUndefined(localStorage.file)) {
+      $('#filename').text(localStorage.file);
+    }
+    if (local_mode) {
+      $('#warning').removeClass('hidden');
+    }
     $('#filename').removeClass('hidden'); 
   }
 
   function chooseDirectory() {
     var directory = remoteCall('choose-directory');
     if (!directory) {
-      alert("I'm sorry, it doesn't look like you chose valid a directory. \nPlease try again.")
+      alert("It doesn't look like you chose valid a directory. \nPlease try again.")
     } else {
       localStorage.directory = directory;
       $('#directions').remove();
@@ -57,11 +62,8 @@ define(function (require) {
       }
       LogFile = JSON.parse(localStorage.localLogFile);
     } else {
-      LogFile = yaml.load(getData({
-        'endpoint': 'getFile',
-        'directory': localStorage.directory,
-        'file': localStorage.file
-      }));
+      console.log('TODO: actually load from server...');
+      LogFile = {lines: []};
     }
   }
 
@@ -83,6 +85,14 @@ define(function (require) {
     return line;
   }
 
+  function saveFile() {
+    if (local_mode) {
+      localStorage.localLogFile = JSON.stringify(LogFile);
+    } else {
+      console.log('should write to: ' + localStorage.directory + '/' + localStorage.file);
+    }
+  }
+
   $('#main-input').keydown(function (e) {
     if (e.which === 13) {
       var time = moment();
@@ -94,6 +104,7 @@ define(function (require) {
         time: time.format("ddd MMM DD YYYY, h:mm a"),
         timestamp: time.valueOf()
       });
+      saveFile();
     }
   });
 
@@ -107,8 +118,11 @@ define(function (require) {
     }
   });
   $('#filename').on('focusout', function (event) {
-    if ($(this).text() != 'untitlted_log_file') {
-      // the user has *possibly* switched out of local mode and is now saving to disk.
+    if (document.activeElement.id !== 'filename' && $('#filename').text() != 'untitlted_log_file') {
+      local_mode = false;
+      localStorage.file = $(this).text();
+      $('#warning').addClass('hidden');
+      saveFile();
     }
   });
 

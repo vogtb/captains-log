@@ -3,10 +3,6 @@
   color: white;
 }
 
-.menu .filename {
-  -webkit-app-region: no-drag;
-}
-
 /*overriding mdl*/
 .mdl-layout__header-row.menu {
   padding: 0 16px 0 16px;

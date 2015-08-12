@@ -35,6 +35,10 @@
         return ipc.sendSync('getData', data);
       }
 
+      function remoteCall(name) {
+        return ipc.sendSync(name, name);
+      }
+
       loadAsset('/assets/css/main.css');
       loadAsset('/assets/css/material.min.css');
       loadAsset('/assets/js/material.min.js');
