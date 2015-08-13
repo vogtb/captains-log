@@ -40,7 +40,7 @@ app.on('ready', function() {
     width: 1240,
     height: 780
   });
-  mainWindow.loadUrl('file://' + __dirname + '/index.html');
+  mainWindow.loadUrl('file://' + __dirname + '/renderer/index.html');
   mainWindow.on('closed', function() {
     mainWindow = null;
   });

@@ -1,5 +1,5 @@
 requirejs.config({
-    baseUrl: jsAssetsDirectory,
+    baseUrl: 'js',
     paths: {
       index: 'index',
       jquery: 'jquery-2.1.4.min',

@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <script>
       var path = require('path'),
-        jsAssetsDirectory = path.join(__dirname, 'assets', 'js'),
+        jsAssetsDirectory = path.join(__dirname, 'js'),
         ipc = require('ipc');
 
       function loadAsset(asset) {
@@ -22,8 +22,8 @@
 
       function loadRequires() {
         var link = document.createElement('script');
-        link.setAttribute('data-main', 'assets/js/loads.js');
-        link.setAttribute('src', path.join(__dirname, 'assets/js/requires.js'));
+        link.setAttribute('data-main', 'js/loads.js');
+        link.setAttribute('src', path.join(__dirname, 'js/requires.js'));
         document.head.appendChild(link);
       }
 
@@ -39,9 +39,9 @@
         return ipc.sendSync(name, name);
       }
 
-      loadAsset('/assets/css/main.css');
-      loadAsset('/assets/css/material.min.css');
-      loadAsset('/assets/js/material.min.js');
+      loadAsset('/css/main.css');
+      loadAsset('/css/material.min.css');
+      loadAsset('/js/material.min.js');
       loadRequires();
     </script>
     <script id="logline-template" type="text/x-handlebars-template">
