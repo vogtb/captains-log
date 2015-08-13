@@ -27,14 +27,6 @@
         document.head.appendChild(link);
       }
 
-      function sendData(data) {
-        return ipc.sendSync('sendData', data);
-      }
-
-      function getData(data) {
-        return ipc.sendSync('getData', data);
-      }
-
       function remoteCall(name) {
         return ipc.sendSync(name, name);
       }

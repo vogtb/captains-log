@@ -8,10 +8,24 @@ var app = require('app'),
   dialog = require('dialog'),
   reporter = require('crash-reporter'),
   LogFile = {lines: []},
-  mainWindow = null; // Keep a global reference of the window object, to stop GCing.
+  mainWindow = null;
 
 // Report crashes to our server.
 reporter.start();
+
+ipc.on('save-file', function(event, data) {
+  fs.writeFile(path.join(data.directory, data.file + '.yaml'), data.log, function (err) {
+    if (err) throw err;
+    event.returnValue = 'OK';
+  });
+});
+
+ipc.on('load-file', function(event, data) {
+  fs.readFile(path.join(data.directory, data.file + '.yaml'), 'utf8', function (err, file) {
+    if (err) throw err;
+    event.returnValue = file;
+  });
+});
 
 
 ipc.on('choose-directory', function(event, data) {

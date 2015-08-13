@@ -39,6 +39,9 @@ define(function (require) {
     if (!_.isUndefined(localStorage.file)) {
       $('#filename').text(localStorage.file);
     }
+    if (_.isUndefined(localStorage.directory)) {
+      $('#main-input').prop('disabled', true);
+    }
     if (local_mode) {
       $('#warning').removeClass('hidden');
     } else {
@@ -65,8 +68,10 @@ define(function (require) {
       }
       LogFile = JSON.parse(localStorage.localLogFile);
     } else {
-      console.log('TODO: actually load from server...');
-      LogFile = {lines: []};
+      LogFile = yaml.load(ipc.sendSync('load-file', {
+        'directory': localStorage.directory,
+        'file': localStorage.file
+      }));
     }
   }
 
@@ -74,25 +79,28 @@ define(function (require) {
     _.map(LogFile.lines, function (logLineObject) {
       $logHolder.append(loglineTemplate(logLineObject));
     });
+    scrollToBottom();
+  }
+
+  function scrollToBottom() {
     $('#page-content-container').scrollTop($('#page-content-container').height() * 2);
   }
 
   function addLine(logLineObject) {
     LogFile.lines.push(logLineObject);
     $logHolder.append(loglineTemplate(logLineObject));
-  }
-
-  function getAndClearLogline() {
-    var line = $('#main-input').val();
-    $('#main-input').val('');
-    return line;
+    scrollToBottom();
   }
 
   function saveFile() {
     if (local_mode) {
       localStorage.localLogFile = JSON.stringify(LogFile);
     } else {
-      console.log('should write to: ' + localStorage.directory + '/' + localStorage.file);
+      var response = ipc.sendSync('save-file', {
+        'directory': localStorage.directory,
+        'file': localStorage.file,
+        'log': yaml.safeDump(LogFile)
+      });
     }
   }
 
@@ -102,12 +110,13 @@ define(function (require) {
       addLine({
         text: {
           type: 'text',
-          line: getAndClearLogline()
+          line: $('#main-input').val()
         },
         time: time.format("ddd MMM DD YYYY, h:mm a"),
         timestamp: time.valueOf()
       });
       saveFile();
+      $('#main-input').val('');
     }
   });
 
