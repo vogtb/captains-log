@@ -124,17 +124,21 @@ define(function (require) {
     if (event.which !== 0) {
       var character = String.fromCharCode(event.which);
       if (event.which === 13) {
-        $('#main-input').focus();
+        $('#change-directory').focus();
       }
-      return !/[^a-zA-Z0-9]/.test(character);
+      return !/[^a-zA-Z0-9_-]/.test(character);
     }
   });
   $('#filename').on('focusout', function (event) {
     if (document.activeElement.id !== 'filename' && $('#filename').text() != 'untitlted_log_file') {
+      localStorage.file = $('#filename').text();
       if (!_.isUndefined(localStorage.directory)) {
         $('#directory').text(localStorage.directory + '/' + localStorage.file + '.yaml');
         $('#directory').removeClass('hidden');
         local_mode = false;
+      }
+      if (!_.isUndefined(localStorage.directory) && !_.isUndefined(localStorage.file)) {
+        $('#main-input').removeAttr('disabled');
       }
       localStorage.file = $(this).text();
       $('#warning').addClass('hidden');
