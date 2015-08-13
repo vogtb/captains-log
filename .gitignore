@@ -5,3 +5,4 @@
 *.pyo
 *.profi
 node_modules/
+build/

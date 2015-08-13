@@ -1,3 +1,0 @@
-#!/bin/sh
-cd
-./Electron.app/Contents/MacOS/Electron dev/captains-log/

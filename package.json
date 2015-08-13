@@ -1,8 +1,20 @@
 {
   "name": "captains-log",
+  "description": "Timestamped notes written to a yaml file in the directory of your choice. That's it.",
+  "author": "Ben <benjvogt@gmail.com>",
   "version": "0.1.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vogtb/captains-log.git"
+  },
+  "bugs": {
+    "url": "https://github.com/vogtb/captains-log/issues"
+  },
   "main": "main.js",
+  "license": "MIT",
   "dependencies": {
+    "asar": "^0.7.2",
+    "electron-prebuilt": "^0.24.0",
     "js-yaml": "^3.3.1",
     "underscore": "^1.8.3"
   }
