@@ -3,7 +3,6 @@ define(function (require) {
     moment = require('moment')
     _ = require('underscore'),
     yaml = require('yaml'),
-    local_mode = true,
     Handlebars = require('handlebars'),
     loglineTemplate = Handlebars.compile($("#logline-template").html()),
     $logHolder = $('#log-holder'),
@@ -16,39 +15,42 @@ define(function (require) {
   });
 
   ensureDirectory();
-  setMode();
-  loadLogFile();
+  loadFile();
   renderLogFile();
+  updateView();
   readyForUser();
 
-  function ensureDirectory() {
+  function updateView() {
     if (_.isUndefined(localStorage.directory)) {
       $('#directions').removeClass('hidden');
-      $('#choose-directory').click(chooseDirectory);
+      $('#main-input').prop('disabled', true);
     } else {
-      $('#directions').remove();
+      $('#directions').addClass('hidden');
+    }
+    if (_.isUndefined(localStorage.file)) {
+      $('#warning').removeClass('hidden');
+    } else {
+      $('#filename').text(localStorage.file);
+      $('#warning').addClass('hidden');
+    }
+    if (!_.isUndefined(localStorage.directory) && !_.isUndefined(localStorage.file)) {
+      $('#warning').removeClass('hidden');
+      $('#directory').text(localStorage.directory + '/' + localStorage.file + '.yaml');
+      $('#main-input').removeAttr('disabled');
+      $('#warning').addClass('hidden');
     }
   }
 
-  function setMode() {
-    local_mode = _.isUndefined(localStorage.directory) || _.isUndefined(localStorage.file);
+  function ensureDirectory() {
+    if (_.isUndefined(localStorage.directory)) {
+      $('#choose-directory').click(chooseDirectory);
+    }
   }
 
   function readyForUser() {
     $('#main-input').focus();
-    if (!_.isUndefined(localStorage.file)) {
-      $('#filename').text(localStorage.file);
-    }
-    if (_.isUndefined(localStorage.directory)) {
-      $('#main-input').prop('disabled', true);
-    }
-    if (local_mode) {
-      $('#warning').removeClass('hidden');
-    } else {
-      $('#directory').text(localStorage.directory + '/' + localStorage.file + '.yaml');
-    }
     $('#directory').removeClass('hidden');
-    $('#filename').removeClass('hidden'); 
+    $('#filename').removeClass('hidden');
   }
 
   function chooseDirectory() {
@@ -57,12 +59,12 @@ define(function (require) {
       alert("It doesn't look like you chose valid a directory. \nPlease try again.")
     } else {
       localStorage.directory = directory;
-      $('#directions').remove();
+      updateView();
     }
   }
 
-  function loadLogFile() {
-    if (local_mode) {
+  function loadFile() {
+    if (_.isUndefined(localStorage.directory) || _.isUndefined(localStorage.file)) {
       if (_.isUndefined(localStorage.localLogFile)) {
         localStorage.localLogFile = JSON.stringify({lines: []});
       }
@@ -93,7 +95,8 @@ define(function (require) {
   }
 
   function saveFile() {
-    if (local_mode) {
+    console.log('saving file with conditions:    ' + localStorage.file + '     ' + localStorage.directory);
+    if (_.isUndefined(localStorage.directory) || _.isUndefined(localStorage.file)) {
       localStorage.localLogFile = JSON.stringify(LogFile);
     } else {
       var response = ipc.sendSync('save-file', {
@@ -117,6 +120,7 @@ define(function (require) {
       });
       saveFile();
       $('#main-input').val('');
+      return false;
     }
   });
 
@@ -130,18 +134,9 @@ define(function (require) {
     }
   });
   $('#filename').on('focusout', function (event) {
-    if (document.activeElement.id !== 'filename' && $('#filename').text() != 'untitlted_log_file') {
+    if (document.activeElement.id !== 'filename') {
       localStorage.file = $('#filename').text();
-      if (!_.isUndefined(localStorage.directory)) {
-        $('#directory').text(localStorage.directory + '/' + localStorage.file + '.yaml');
-        $('#directory').removeClass('hidden');
-        local_mode = false;
-      }
-      if (!_.isUndefined(localStorage.directory) && !_.isUndefined(localStorage.file)) {
-        $('#main-input').removeAttr('disabled');
-      }
-      localStorage.file = $(this).text();
-      $('#warning').addClass('hidden');
+      updateView();
       saveFile();
     }
   });
