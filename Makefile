@@ -1,6 +1,5 @@
 NODE_BIN=./node_modules/.bin
 ELECTRON=$(NODE_BIN)/electron
-ASAR=$(NODE_BIN)/asar
 
 all: dep build
 
@@ -13,25 +12,17 @@ dep:
 build: clean
 	@mkdir build
 	@mkdir build/renderer
-	# move renderer scripts
 	cp -r renderer build/
 
-clean: clean-asar
-	@rm -rf ./build
+clean:
+	@rm -rf build
 
-asar: clean-asar build
-	@mkdir asar
-	@cp ./main.js asar/
-	@cp ./package.json asar/
-	@cp -r ./build asar/
-	@cd asar; npm install --production; cd ..
-	asar pack renderer build/app.asar
-
-clean-asar:
-	@rm -rf ./asar
-
-package: clean asar
+package: build
 	@cp -av node_modules/electron-prebuilt/dist/Electron.app build/
 	@mv build/Electron.app build/CaptainsLog.app
-	@mv build/app.asar build/CaptainsLog.app/Contents/Resources/
+	@mkdir -p build/CaptainsLog.app/Contents/Resources/app/renderer
+	@cp -av main.js build/CaptainsLog.app/Contents/Resources/app/
+	@cp -av package.json build/CaptainsLog.app/Contents/Resources/app/
+	@cp -av build/renderer build/CaptainsLog.app/Contents/Resources/app
+	@cp -av lib/Info.plist build/CaptainsLog.app/Contents/Info.plist
 	@echo "done"
