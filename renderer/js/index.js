@@ -116,20 +116,22 @@ define(function (require) {
   }
 
   function parseLineToObject(line) {
-    if (line.startsWith('/code')) {
-      var languagesDetected = _.filter(supportedLanguages, function(language) {
-        return line.startsWith('/code-' + language);
-      });
-      if (!_.isEmpty(languagesDetected)) {
-        var toSlice = '/code-' + _.last(languagesDetected)
-        line = line.slice(toSlice.length + 1);
-      } else {
-        languagesDetected.push('text');
-        line = line.slice(6);
-      }
+    var languagesDetected = _.filter(supportedLanguages, function(language) {
+      return line.startsWith('/' + language + ' ');
+    });
+    if (!_.isEmpty(languagesDetected)) {
+      var toSlice = '/' + _.first(languagesDetected) + ' ';
+      line = line.slice(toSlice.length);
       return {
         'code': true,
-        'language': _.last(languagesDetected),
+        'language': languagesDetected,
+        'line': line
+      }
+    } else if (line.startsWith('/code')) {
+      line = line.slice('/code '.length);
+      return {
+        'code': true,
+        'language': 'javascript',
         'line': line
       }
     }

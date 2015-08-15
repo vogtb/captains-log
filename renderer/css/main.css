@@ -32,6 +32,10 @@ i.rename {
   width: 100%;
 }
 
+.input-panel .main-input {
+  font-size: 14px;
+}
+
 .input-panel textarea {
   resize: none;
 }
@@ -46,11 +50,12 @@ i.rename {
 }
 
 .logline .text {
-  font-size: 14px;
+  font-size: 15px;
 }
 
 .logline .text pre {
   margin: 4px 0px;
+  white-space: pre-wrap;
 }
 
 .timestamp {
