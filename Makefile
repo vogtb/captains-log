@@ -11,8 +11,16 @@ dep:
 
 clean:
 	@rm -rf build
+	@rm -rf node_modules
 
-package: clean
-	mkdir -p build/osx
-	electron-packager ./ build/CaptainsLog --platform=darwin --arch=x64 --version=0.24.0
+package: clean dep
+	@mkdir -p build
+	@electron-packager ./ build/CaptainsLog --platform=darwin --arch=x64 --version=0.24.0
 	@echo "done"
+	@cd
+
+dist: package
+	@mkdir -p dist
+	@cd build && zip -r ../dist/CaptainsLog-darwin-x64.zip CaptainsLog-darwin-x64
+	# @cp build/CaptainsLog-darwin-x64.zip dist/
+	# @rm build/CaptainsLog-darwin-x64.zip
