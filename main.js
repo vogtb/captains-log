@@ -1,7 +1,6 @@
 var app = require('app'),
   fs = require('fs'),
   ipc = require('ipc'),
-  yaml = require('js-yaml'),
   _ = require('underscore'),
   path = require('path'),
   BrowserWindow = require('browser-window'),
@@ -54,7 +53,7 @@ app.on('ready', function() {
     width: 1240,
     height: 780
   });
-  mainWindow.loadUrl('file://' + __dirname + '/renderer/index.html');
+  mainWindow.loadUrl('file://' + __dirname + '/renderer/renderer.html');
   mainWindow.on('closed', function() {
     mainWindow = null;
   });
