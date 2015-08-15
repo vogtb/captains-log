@@ -1,6 +1,6 @@
 {
   "name": "captains-log",
-  "description": "Timestamped notes written to a yaml file in the directory of your choice. That's it.",
+  "description": "Timestamped notes written to a yaml file in the directory of your choice.",
   "author": "Ben <benjvogt@gmail.com>",
   "version": "0.1.0",
   "repository": {
