@@ -46,7 +46,11 @@ i.rename {
 }
 
 .logline .text {
-  font-size: 15px;
+  font-size: 14px;
+}
+
+.logline .text pre {
+  margin: 4px 0px;
 }
 
 .timestamp {

@@ -33,12 +33,19 @@
 
       loadAsset('/css/main.css');
       loadAsset('/css/material.min.css');
+      loadAsset('/css/highlight.css');
       loadAsset('/js/material.min.js');
       loadRequires();
     </script>
     <script id="logline-template" type="text/x-handlebars-template">
       <div class="mdl-grid logline">
-        <div class="mdl-cell mdl-cell--10-col text">{{ breaklines text.line }}</div>
+        <div class="mdl-cell mdl-cell--10-col text">
+          {{#if text.code}}
+  <pre><code class="{{ text.language }}">{{ text.line }}</code></pre>
+          {{else}}
+  {{ breaklines text.line }}
+          {{/if}}
+        </div>
         <div class="mdl-cell mdl-cell--2-col timestamp" timestamp="{{ timestamp }}">{{ time }}</div>
       </div>
     </script>

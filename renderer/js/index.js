@@ -6,13 +6,15 @@ define(function (require) {
     Handlebars = require('handlebars'),
     loglineTemplate = Handlebars.compile($("#logline-template").html()),
     $logHolder = $('#log-holder'),
-    LogFile = {lines: []};
+    LogFile = {lines: []},
+    supportedLanguages = hljs.listLanguages();
 
   Handlebars.registerHelper('breaklines', function(text) {
     text = Handlebars.Utils.escapeExpression(text);
     text = text.replace(/(\r\n|\n|\r)/gm, '<br>');
     return new Handlebars.SafeString(text);
   });
+
 
   ensureDirectory();
   loadFile();
@@ -81,6 +83,9 @@ define(function (require) {
     _.map(LogFile.lines, function (logLineObject) {
       $logHolder.append(loglineTemplate(logLineObject));
     });
+    $('pre code').each(function(i, block) {
+      hljs.highlightBlock(block);
+    });
     scrollToBottom();
   }
 
@@ -92,6 +97,9 @@ define(function (require) {
     LogFile.lines.push(logLineObject);
     $logHolder.append(loglineTemplate(logLineObject));
     scrollToBottom();
+    $('pre code').each(function(i, block) {
+      hljs.highlightBlock(block);
+    });
   }
 
   function saveFile() {
@@ -107,14 +115,36 @@ define(function (require) {
     }
   }
 
+  function parseLineToObject(line) {
+    if (line.startsWith('/code')) {
+      var languagesDetected = _.filter(supportedLanguages, function(language) {
+        return line.startsWith('/code-' + language);
+      });
+      if (!_.isEmpty(languagesDetected)) {
+        var toSlice = '/code-' + _.last(languagesDetected)
+        line = line.slice(toSlice.length + 1);
+      } else {
+        languagesDetected.push('text');
+        line = line.slice(6);
+      }
+      return {
+        'code': true,
+        'language': _.last(languagesDetected),
+        'line': line
+      }
+    }
+    return {
+      'code': false,
+      'line': line
+    }
+  }
+
   $('#main-input').keydown(function (e) {
     if (e.which === 13) {
       var time = moment();
+      var line = $('#main-input').val();
       addLine({
-        text: {
-          type: 'text',
-          line: $('#main-input').val()
-        },
+        text: parseLineToObject(line),
         time: time.format("ddd MMM DD YYYY, h:mm a"),
         timestamp: time.valueOf()
       });
