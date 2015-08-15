@@ -13,5 +13,10 @@ make run
 make package
 ```
 
+## Distributing
+```bash
+make dist VERSION=<version number>
+```
+
 ## License
 MIT

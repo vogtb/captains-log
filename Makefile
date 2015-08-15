@@ -1,5 +1,6 @@
 NODE_BIN=./node_modules/.bin
 ELECTRON=$(NODE_BIN)/electron
+VERSION?=0.1.0
 
 all: dep
 
@@ -14,13 +15,13 @@ clean:
 	@rm -rf node_modules
 
 package: clean dep
+	@nicns --in icons/icon.png --out icons/icon.icns
 	@mkdir -p build
-	@electron-packager ./ build/CaptainsLog --platform=darwin --arch=x64 --version=0.24.0
+	@cd build && electron-packager ../ CaptainsLog --platform=darwin --arch=x64 --version=0.24.0 --icon=../icons/icon.icns --app-bundle-id=CaptainsLog --app-version=${VERSION}
 	@echo "done"
-	@cd
 
 dist: package
 	@mkdir -p dist
-	@cd build && zip -r ../dist/CaptainsLog-darwin-x64.zip CaptainsLog-darwin-x64
-	# @cp build/CaptainsLog-darwin-x64.zip dist/
-	# @rm build/CaptainsLog-darwin-x64.zip
+	@rm build/CaptainsLog-darwin-x64/LICENSE
+	@rm build/CaptainsLog-darwin-x64/version
+	@cd build && zip -r ../dist/CaptainsLog-darwin-x64-${VERSION}.zip CaptainsLog-darwin-x64
