@@ -13,8 +13,8 @@
   "main": "main.js",
   "license": "MIT",
   "dependencies": {
-    "asar": "^0.7.2",
     "electron-prebuilt": "^0.24.0",
+    "electron-packager": "^5.0.1",
     "js-yaml": "^3.3.1",
     "underscore": "^1.8.3"
   }
