@@ -15,7 +15,6 @@ define(function (require) {
     return new Handlebars.SafeString(text);
   });
 
-
   ensureDirectory();
   loadFile();
   renderLogFile();
@@ -72,7 +71,7 @@ define(function (require) {
       }
       LogFile = JSON.parse(localStorage.localLogFile);
     } else {
-      LogFile = yaml.load(ipc.sendSync('load-file', {
+      LogFile = yaml.safeLoad(ipc.sendSync('load-file', {
         'directory': localStorage.directory,
         'file': localStorage.file
       }));
