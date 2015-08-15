@@ -1,0 +1,34 @@
+.header {
+  padding-top: 20px;
+}
+
+.demo-img {
+  box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.33);
+  /*box-shadow: 0 4px 4px 0 rgba(0,0,0,.14),0 4px 4px 0px rgba(0,0,0,.2),0 2px px 0 rgba(0,0,0,.12);*/
+  width: 100%;
+  height: 100%;
+}
+
+img.brand-icon {
+  height: 32px;
+  width: 32px;
+}
+
+.banner {
+  text-align: center;
+  width: 70%;
+  margin: 0 auto;
+}
+
+.call-to-action {
+  text-align: center;
+}
+
+.layout-transparent {
+  background: #01579B;
+}
+.layout-transparent .mdl-layout__header,
+.layout-transparent .mdl-layout__drawer-button,
+.white {
+  color: white;
+}
