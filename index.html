@@ -17,17 +17,25 @@
   </head>
   <body>
     <div class="layout-transparent mdl-layout mdl-js-layout">
-      <header class="mdl-layout__header mdl-layout__header--transparent">
-        <div class="mdl-layout__header-row">
-          <img class="brand-icon" src="icons/icon.png">
-          <span class="mdl-layout-title">Captain's Log</span>
-          <div class="mdl-layout-spacer"></div>
-          <nav class="mdl-navigation">
-            <a class="mdl-navigation__link" href="http://github.com/vogtb/captains-log">Github</a>
-            <a class="mdl-navigation__link" href="http://github.com/vogtb/captains-log">Download</a>
-          </nav>
+      <div class="mdl-layout__content">
+        <div class="mdl-grid mdl-grid--no-spacing">
+          <div class="mdl-cell mdl-cell--2-col"></div>
+          <div class="mdl-cell mdl-cell--8-col">
+            <header class="mdl-layout__header mdl-layout__header--transparent">
+            <div class="mdl-layout__header-row">
+              <img class="brand-icon" src="icons/icon.png">
+              <span class="mdl-layout-title">Captain's Log</span>
+              <div class="mdl-layout-spacer"></div>
+              <nav class="mdl-navigation">
+                <a class="mdl-navigation__link" href="http://github.com/vogtb/captains-log">Github</a>
+                <a class="mdl-navigation__link" href="http://github.com/vogtb/captains-log">Download</a>
+              </nav>
+            </div>
+          </header>
+          </div>
+          <div class="mdl-cell mdl-cell--2-col"></div>
         </div>
-      </header>
+      </div>
       <main class="mdl-layout__content white">
         <div class="mdl-grid mdl-grid--no-spacing">
           <div class="mdl-cell mdl-cell--2-col mdl-cell--hide-tablet mdl-cell--hide-phone"></div>
@@ -72,12 +80,21 @@
       </div>
     </div>
     <footer class="mdl-mini-footer">
-      <div class="mdl-mini-footer__left-section">
-        <div class="mdl-logo"><img class="brand-icon" src="icons/icon.png">Captain's Log</div>
-        <ul class="mdl-mini-footer__link-list">
-          <li><a href="http://github.com/vogtb/captains-log#license">License</a></li>
-        </ul>
+      <div class="mdl-layout__content">
+        <div class="mdl-grid mdl-grid--no-spacing">
+          <div class="mdl-cell mdl-cell--2-col"></div>
+          <div class="mdl-cell mdl-cell--8-col">
+            <div class="mdl-mini-footer__left-section">
+              <div class="mdl-logo"><img class="brand-icon" src="icons/icon.png">Captain's Log</div>
+              <ul class="mdl-mini-footer__link-list">
+                <li><a href="http://github.com/vogtb/captains-log#license">License</a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="mdl-cell mdl-cell--2-col"></div>
+        </div>
       </div>
+      
     </footer>
   </body>
 </html>

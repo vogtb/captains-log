@@ -3,10 +3,13 @@
 }
 
 .demo-img {
-  box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.33);
-  /*box-shadow: 0 4px 4px 0 rgba(0,0,0,.14),0 4px 4px 0px rgba(0,0,0,.2),0 2px px 0 rgba(0,0,0,.12);*/
+  box-shadow: 0 4px 4px 0 rgba(0,0,0,.14),0 4px 4px 0px rgba(0,0,0,.2),0 2px px 0 rgba(0,0,0,.12);
   width: 100%;
   height: 100%;
+}
+
+.mdl-layout__header-row {
+  padding: 0 6px 0 6px;
 }
 
 img.brand-icon {
@@ -37,6 +40,17 @@ img.brand-icon {
 .right {
   float: right;
 }
+@media (max-width: 839px) {
+  .right {
+    float: left;
+  }
+}
+@media screen and (max-width: 1024px) {
+  .mdl-layout__header {
+    display: flex; 
+  }
+}
+
 
 .github {
   background: white;
