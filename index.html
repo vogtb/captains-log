@@ -24,15 +24,15 @@
           <div class="mdl-layout-spacer"></div>
           <nav class="mdl-navigation">
             <a class="mdl-navigation__link" href="http://github.com/vogtb/captains-log">Github</a>
-            <a class="mdl-navigation__link" href="">Download</a>
+            <a class="mdl-navigation__link" href="http://github.com/vogtb/captains-log">Download</a>
           </nav>
         </div>
       </header>
       <main class="mdl-layout__content white">
         <div class="mdl-grid mdl-grid--no-spacing">
           <div class="mdl-cell mdl-cell--2-col mdl-cell--hide-tablet mdl-cell--hide-phone"></div>
-          <div class="content mdl-cell mdl-cell--8-col mdl-grid ">
-            <h3 class="banner">Timestamped notes written to a yaml file in the directory of your choice.</h3>
+          <div class="content mdl-cell mdl-cell--8-col mdl-grid">
+            <h3 class="banner">Timestamped notes written to a yaml file in the directory of your choice.<br><small>for Mac OS X</small></h3>
             <p>
               <div class="downloads-banner mdl-cell mdl-cell--6-col">
                 <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored right download">
@@ -52,20 +52,30 @@
         </div>
       </main>
     </div>
-    <div class="mdl-layout mdl-js-layout">
+    <div class="mdl-layout mdl-js-layout mdl-layout__content">
       <div class="mdl-grid mdl-grid--no-spacing">
-        <div class="mdl-cell mdl-cell--2-col"></div>
-        <div class="mdl-cell mdl-cell--8-col">
-          dsaldsakj
+        <div class="mdl-cell mdl-cell--2-col mdl-cell--hide-tablet mdl-cell--hide-phone"></div>
+        <div class="content mdl-cell mdl-cell--8-col mdl-grid">
+          <div class="mdl-cell mdl-cell--4-col">
+            <h4>.yaml</h4>
+            <p>All log entries are stored as multi-line values in yaml, so you can grep from them on your host machine, without worry about encoding.</p>
+          </div>
+          <div class="mdl-cell mdl-cell--4-col">
+            <h4>/code</h4>
+            <p>By using the <code>/code</code> prefix, you can save and view multiline code blocks.</p>
+          </div>
+          <div class="mdl-cell mdl-cell--4-col">
+            <h4>That's all</h4>
+            <p>This is where I'd normally put a third selling point, but that's really all this application does.</p>
+          </div>
         </div>
-        <div class="mdl-cell mdl-cell--2-col"></div>
       </div>
     </div>
     <footer class="mdl-mini-footer">
       <div class="mdl-mini-footer__left-section">
         <div class="mdl-logo"><img class="brand-icon" src="icons/icon.png">Captain's Log</div>
         <ul class="mdl-mini-footer__link-list">
-          <li><a href="#">License</a></li>
+          <li><a href="http://github.com/vogtb/captains-log#license">License</a></li>
         </ul>
       </div>
     </footer>

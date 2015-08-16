@@ -12,6 +12,7 @@
 img.brand-icon {
   height: 32px;
   width: 32px;
+  padding-right: 12px;
 }
 
 .banner {
