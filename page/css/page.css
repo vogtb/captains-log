@@ -18,17 +18,39 @@ img.brand-icon {
   text-align: center;
   width: 70%;
   margin: 0 auto;
+  padding: 40px 0px 50px 0px;
+}
+
+.downloads-banner {
+  padding: 0px 0px 31px 0px;
 }
 
 .call-to-action {
   text-align: center;
 }
 
+.middle {
+  margin: 0 auto;
+}
+
+.right {
+  float: right;
+}
+
+.github {
+  background: white;
+  color: #2196F3;
+}
+
+.github:hover {
+  background: white;
+  color: #1E88E5;
+}
+
 .layout-transparent {
   background: #01579B;
 }
 .layout-transparent .mdl-layout__header,
-.layout-transparent .mdl-layout__drawer-button,
 .white {
   color: white;
 }

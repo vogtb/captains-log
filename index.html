@@ -30,23 +30,25 @@
       </header>
       <main class="mdl-layout__content white">
         <div class="mdl-grid mdl-grid--no-spacing">
-          <div class="mdl-cell mdl-cell--2-col"></div>
-          <div class="mdl-cell mdl-cell--8-col">
+          <div class="mdl-cell mdl-cell--2-col mdl-cell--hide-tablet mdl-cell--hide-phone"></div>
+          <div class="content mdl-cell mdl-cell--8-col mdl-grid ">
+            <h3 class="banner">Timestamped notes written to a yaml file in the directory of your choice.</h3>
             <p>
-              <h3 class="banner">Timestamped notes written to a yaml file in the directory of your choice.</h3>
-            </p>
-            <p>
-              <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
-                Download Captain's Log
-              </button>
-              <br>
-              <small>V 0.1.0</small>
+              <div class="downloads-banner mdl-cell mdl-cell--6-col">
+                <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored right download">
+                  Download Captain's Log
+                </button>
+              </div>
+              <div class="downloads-banner mdl-cell mdl-cell--6-col">
+                <button class="github mdl-button mdl-js-button mdl-button--raised">
+                  View on GitHub
+                </button>
+              </div>
             </p>
             <p>
               <img class="demo-img" src="page/img/demo.gif">
             </p>
           </div>
-          <div class="mdl-cell mdl-cell--2-col"></div>
         </div>
       </main>
     </div>
@@ -59,5 +61,13 @@
         <div class="mdl-cell mdl-cell--2-col"></div>
       </div>
     </div>
+    <footer class="mdl-mini-footer">
+      <div class="mdl-mini-footer__left-section">
+        <div class="mdl-logo"><img class="brand-icon" src="icons/icon.png">Captain's Log</div>
+        <ul class="mdl-mini-footer__link-list">
+          <li><a href="#">License</a></li>
+        </ul>
+      </div>
+    </footer>
   </body>
 </html>
