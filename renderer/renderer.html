@@ -43,7 +43,7 @@
           {{#if text.code}}
   <pre><code class="{{ text.language }}">{{ text.line }}</code></pre>
           {{else}}
-  {{ breaklines text.line }}
+  {{ encodefordisplay text.line }}
           {{/if}}
         </div>
         <div class="mdl-cell mdl-cell--2-col timestamp" timestamp="{{ timestamp }}">{{ time }}</div>

@@ -8,9 +8,11 @@ define(function (require) {
     LogFile = {lines: []},
     supportedLanguages = hljs.listLanguages();
 
-  Handlebars.registerHelper('breaklines', function(text) {
+  Handlebars.registerHelper('encodefordisplay', function(text) {
     text = Handlebars.Utils.escapeExpression(text);
     text = text.replace(/(\r\n|\n|\r)/gm, '<br>');
+    text = text.replace(/(\b(https?|ftp):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gim, '<a href="$1" target="_blank">$1</a>');
+    text = text.replace(/(^|[^\/])(www\.[\S]+(\b|$))/gim, '$1<a href="http://$2" target="_blank">$2</a>');
     return new Handlebars.SafeString(text);
   });
 

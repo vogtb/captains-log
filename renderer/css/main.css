@@ -64,6 +64,13 @@ i.rename {
   white-space: pre-wrap;
 }
 
+.logline a {
+  color: #1E88E5;
+}
+.logline a:hover {
+  color: #2196F3;
+}
+
 .timestamp {
   text-align: right;
 }
