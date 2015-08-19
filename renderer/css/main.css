@@ -3,6 +3,12 @@
   color: white;
 }
 
+img.logo {
+  height: 32px;
+  width: 32px;
+  margin-right: 12px;
+}
+
 .menu .directory {
   padding-right: 16px;
 }

@@ -21,6 +21,15 @@ define(function (require) {
   updateView();
   readyForUser();
 
+  function loadImg() {
+    var img = document.createElement('img');
+    img.setAttribute('src', path.join(__dirname, 'img/icon.png'));
+    img.setAttribute('class', 'logo');
+    $('#logo-holder').append(img).removeClass('hidden');
+
+  }
+  loadImg();
+
   function updateView() {
     if (_.isUndefined(localStorage.directory)) {
       $('#directions').removeClass('hidden');
