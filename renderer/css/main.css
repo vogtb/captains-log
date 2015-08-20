@@ -1,3 +1,8 @@
+body {
+  min-height: 780px;
+  min-width: 780px;
+}
+
 .menu {
   background: #2196F3;
   color: white;
