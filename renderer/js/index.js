@@ -86,6 +86,16 @@ define(function (require) {
         'directory': localStorage.directory,
         'file': localStorage.file
       }));
+      _.map(LogFile.lines, function(log, index) {
+        var line = log.text.line;
+        var splitOnEndings = line.split('\n');
+        var filtered = _.filter(splitOnEndings, function(currentLine) {
+          return currentLine != "";
+        });
+        if (filtered.length >= Math.round(splitOnEndings.length / 2) - 3 && filtered.length <= Math.round(splitOnEndings.length / 2) + 3) {
+          LogFile.lines[index].text.line = filtered.join('\n');
+        }
+      });
     }
   }
 
