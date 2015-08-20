@@ -2,6 +2,7 @@ define(function (require) {
   var $ = require('jquery'),
     moment = require('moment')
     _ = require('underscore'),
+    yaml = require('yaml'),
     Handlebars = require('handlebars'),
     loglineTemplate = Handlebars.compile($("#logline-template").html()),
     $logHolder = $('#log-holder'),
@@ -81,7 +82,7 @@ define(function (require) {
       }
       LogFile = JSON.parse(localStorage.localLogFile);
     } else {
-      LogFile = YAML.parse(ipc.sendSync('load-file', {
+      LogFile = yaml.safeLoad(ipc.sendSync('load-file', {
         'directory': localStorage.directory,
         'file': localStorage.file
       }));
@@ -119,7 +120,7 @@ define(function (require) {
       var response = ipc.sendSync('save-file', {
         'directory': localStorage.directory,
         'file': localStorage.file,
-        'log': YAML.stringify(LogFile)
+        'log': yaml.safeDump(LogFile)
       });
     }
   }
