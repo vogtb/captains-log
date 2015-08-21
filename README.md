@@ -1,6 +1,8 @@
 # Captain's Log
 Timestamped notes written to a yaml file in the directory of your choice.
 
+![alt tag](/page/img/demo.gif)
+
 ## Running
 
 ```bash
