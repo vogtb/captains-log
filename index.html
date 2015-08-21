@@ -64,9 +64,13 @@
       <div class="mdl-grid mdl-grid--no-spacing">
         <div class="mdl-cell mdl-cell--2-col mdl-cell--hide-tablet mdl-cell--hide-phone"></div>
         <div class="content mdl-cell mdl-cell--8-col mdl-grid">
+          <div class="mdl-cell mdl-cell--12-col">
+            <h4>When you're working on a problem and you're trying out different solutions, it's easy to lose track of what you've done. You might keep notes, but days later you don't remember which commands you ran, when you ran them, and what the results were. <br><strong>By timestamping your notes and writing them to a yaml file containing the raw text, you can keep your notes and grep them too.</strong></h4>
+          </div>
           <div class="mdl-cell mdl-cell--6-col">
             <h4>/code</h4>
-            <p>By using the <code>/code</code> prefix, you can save and view multiline code blocks. You can even use specific the language to get syntax highlighting in your code block. Supprted languages: objectivec, ini, bash, xml, perl, markdown, python, cs, nginx, http, sql, apache, php, java, cpp, javascript, ruby, diff, css, makefile, coffeescript, json</p>
+            <p>By using the <code>/code</code> prefix, you can save and view multi-line code blocks. You can even use specific the language name (eg: <code>/java</code>, <code>/ruby</code>) to get syntax highlighting in your code block. </p>
+            <h5>Supprted languages:</h5>
             <ul>
               <li>objectivec</li>
               <li>ini</li>
@@ -95,6 +99,7 @@
           <div class="mdl-cell mdl-cell--6-col">
             <h4>.yaml</h4>
             <p>All log entries are stored as multi-line values in yaml, so you can grep from them on your host machine, without worry about encoding.</p>
+            <h5>Example File:</h5>
             <p>
 <pre><code>
 lines:

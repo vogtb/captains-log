@@ -37,6 +37,7 @@ i.rename {
   bottom: 0px;
   left: 0px;
   z-index: 10000;
+  border-top: 1px solid #E0E0E0;
 }
 
 .input-panel .mdl-textfield {

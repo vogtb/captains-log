@@ -162,7 +162,7 @@ define(function (require) {
   }
 
   $('#main-input').keydown(function (e) {
-    if (e.which === 13) {
+    if (e.which === 13 && !e.shiftKey) {
       var time = moment();
       var line = $('#main-input').val();
       addLine({
