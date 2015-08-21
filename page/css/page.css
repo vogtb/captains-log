@@ -44,6 +44,15 @@ img.brand-icon {
   .right {
     float: left;
   }
+
+  .cta {
+    width: calc(100% - 16px);
+  }
+
+  .downloads-banner {
+    padding: 0px 0px 10px 0px;
+    width: calc(100% - 16px);
+  }
 }
 @media screen and (max-width: 1024px) {
   .mdl-layout__header {

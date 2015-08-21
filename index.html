@@ -28,7 +28,7 @@
               <div class="mdl-layout-spacer"></div>
               <nav class="mdl-navigation">
                 <a class="mdl-navigation__link" href="http://github.com/vogtb/captains-log">Github</a>
-                <a class="mdl-navigation__link" href="http://github.com/vogtb/captains-log">Download</a>
+                <a class="mdl-navigation__link" href="http://github.com/vogtb/captains-log/releases/latest">Download</a>
               </nav>
             </div>
           </header>
@@ -43,14 +43,14 @@
             <h3 class="banner">Timestamped notes written to a yaml file in the directory of your choice.<br><small>for Mac OS X</small></h3>
             <p>
               <div class="downloads-banner mdl-cell mdl-cell--6-col">
-                <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored right download">
+                <a href="http://github.com/vogtb/captains-log/releases/latest" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored right download cta">
                   Download Captain's Log
-                </button>
+                </a>
               </div>
               <div class="downloads-banner mdl-cell mdl-cell--6-col">
-                <button class="github mdl-button mdl-js-button mdl-button--raised">
+                <a href="http://github.com/vogtb/captains-log" class="github mdl-button mdl-js-button mdl-button--raised cta">
                   View on GitHub
-                </button>
+                </a>
               </div>
             </p>
             <p>
@@ -64,20 +64,6 @@
       <div class="mdl-grid mdl-grid--no-spacing">
         <div class="mdl-cell mdl-cell--2-col mdl-cell--hide-tablet mdl-cell--hide-phone"></div>
         <div class="content mdl-cell mdl-cell--8-col mdl-grid">
-          <div class="mdl-cell mdl-cell--6-col">
-            <h4>.yaml</h4>
-            <p>All log entries are stored as multi-line values in yaml, so you can grep from them on your host machine, without worry about encoding.</p>
-            <p>
-<pre><code>
-lines:
-    - {text: {code: false, line: 'This is a line of plain text.'}, time: 'Wed Aug 19 2015, 6:42 pm', timestamp: 1440027767488}
-    - {text: {code: false, line: "This\tis\tsome\tmulti-line\nplain\ttext."}, time: 'Wed Aug 19 2015, 6:43 pm', timestamp: 1440027797209}
-    - {text: {code: false, line: "This\tis\tsome\tmulti-line\nplain\ttext.\tComing\tup\tnext:\tcode"}, time: 'Wed Aug 19 2015, 6:43 pm', timestamp: 1440027817305}
-    - {text: {code: false, line: "This\tis\tsome\tmulti-line\nplain\ttext.\tComing\tup\tnext:\tcode!"}, time: 'Wed Aug 19 2015, 6:43 pm', timestamp: 1440027825026}
-    - {text: {code: true, language: [javascript], line: "app.on('window-all-closed',\tfunction()\t{\n\t\tapp.quit();\n});"}, time: 'Wed Aug 19 2015, 6:44 pm', timestamp: 1440027882995}
-    - {text: {code: true, language: [python], line: "def\tweighted_choice(choices):\n\t\t\ttotal\t=\tsum(w\tfor\tc,\tw\tin\tchoices)\n\t\t\tr\t=\trandom.uniform(0,\ttotal)\n\t\t\tupto\t=\t0\n\t\t\tfor\tc,\tw\tin\tchoices:\n\t\t\t\t\t\tif\tupto\t+\tw\t>\tr:\n\t\t\t\t\t\t\t\t\treturn\tc\n\t\t\t\t\t\tupto\t+=\tw\n\t\t\tassert\tFalse,\t\"Shouldn't\tget\there\""}, time: 'Wed Aug 19 2015, 6:45 pm', timestamp: 1440027908964}</code></pre>
-            </p>
-          </div>
           <div class="mdl-cell mdl-cell--6-col">
             <h4>/code</h4>
             <p>By using the <code>/code</code> prefix, you can save and view multiline code blocks. You can even use specific the language to get syntax highlighting in your code block. Supprted languages: objectivec, ini, bash, xml, perl, markdown, python, cs, nginx, http, sql, apache, php, java, cpp, javascript, ruby, diff, css, makefile, coffeescript, json</p>
@@ -105,6 +91,51 @@ lines:
               <li>coffeescript</li>
               <li>json</li>
             </ul>
+          </div>
+          <div class="mdl-cell mdl-cell--6-col">
+            <h4>.yaml</h4>
+            <p>All log entries are stored as multi-line values in yaml, so you can grep from them on your host machine, without worry about encoding.</p>
+            <p>
+<pre><code>
+lines:
+  - text:
+      code: false
+      line: Some plain text
+    time: 'Thu Aug 20 2015, 9:08 pm'
+    timestamp: 1440122933048
+  - text:
+      code: false
+      line: 'And now for some code!'
+    time: 'Thu Aug 20 2015, 9:09 pm'
+    timestamp: 1440122941865
+  - text:
+      code: true
+      language:
+        - javascript
+      line: |-
+        app.on('window-all-closed', function() {
+          app.quit();
+        });
+    time: 'Thu Aug 20 2015, 9:09 pm'
+    timestamp: 1440122962129
+  - text:
+      code: true
+      language:
+        - python
+      line: |-
+        def weighted_choice(choices):
+           total = sum(w for c, w in choices)
+           r = random.uniform(0, total)
+           upto = 0
+           for c, w in choices:
+              if upto + w > r:
+                 return c
+              upto += w
+           assert False, "Shouldn't get here"
+    time: 'Thu Aug 20 2015, 9:09 pm'
+    timestamp: 1440122983539
+</code></pre>
+            </p>
           </div>
         </div>
       </div>
