@@ -7,7 +7,10 @@ define(function (require) {
     loglineTemplate = Handlebars.compile($("#logline-template").html()),
     $logHolder = $('#log-holder'),
     LogFile = {lines: []},
-    supportedLanguages = hljs.listLanguages();
+    supportedLanguages = hljs.listLanguages(),
+    Notifications = {
+      SavedToNewFile: "Saved all log lines to new file"
+    };
 
   Handlebars.registerHelper('encodefordisplay', function(text) {
     text = Handlebars.Utils.escapeExpression(text);
@@ -51,6 +54,14 @@ define(function (require) {
       $('#main-input').removeAttr('disabled');
       $('#warning').addClass('hidden');
     }
+  }
+
+  function showNotification(notification) {
+    $('#notification').text(notification);
+    $('#notification').removeClass('hidden');
+    setTimeout(function() {
+      $('#notification').addClass('hidden');
+    }, 5000);
   }
 
   function ensureDirectory() {
@@ -193,6 +204,9 @@ define(function (require) {
   });
   $('#filename').on('focusout', function (event) {
     if (document.activeElement.id !== 'filename') {
+      if (!_.isUndefined(localStorage.file)) {
+        showNotification(Notifications.SavedToNewFile);
+      }
       localStorage.file = $('#filename').text();
       updateView();
       saveFile();

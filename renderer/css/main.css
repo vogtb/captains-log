@@ -52,6 +52,17 @@ i.rename {
   resize: none;
 }
 
+.notification.error {
+  background: #FFC107;
+  color: black;
+}
+
+.notification {
+  background: #1565C0;
+  color: white;
+  padding: 4px 10px;
+  border-radius: 2px;
+}
 
 .mdl-grid.logline {
   padding: 4px 5px;
