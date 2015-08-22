@@ -176,6 +176,12 @@ define(function (require) {
     }
   });
 
+  // prevent tab from being inserted into the #filename element
+  $('#filename').keydown(function(e) {
+    if (e.which === 9) {
+      e.preventDefault();
+    }
+  });
   $('#filename').keypress(function (event) {
     if (event.which !== 0) {
       var character = String.fromCharCode(event.which);
@@ -192,6 +198,5 @@ define(function (require) {
       saveFile();
     }
   });
-
 
 });
