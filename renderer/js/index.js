@@ -31,7 +31,6 @@ define(function (require) {
     img.setAttribute('src', path.join(__dirname, 'img/icon.png'));
     img.setAttribute('class', 'logo');
     $('#logo-holder').append(img).removeClass('hidden');
-
   }
   loadImg();
 
@@ -133,16 +132,21 @@ define(function (require) {
     });
   }
 
-  function saveFile() {
+  function saveFile(callback) {
     console.log('saving file with conditions:    ' + localStorage.file + '     ' + localStorage.directory);
+    var response;
     if (_.isUndefined(localStorage.directory) || _.isUndefined(localStorage.file)) {
       localStorage.localLogFile = JSON.stringify(LogFile);
+      response = "OK";
     } else {
-      var response = ipc.sendSync('save-file', {
+      response = ipc.sendSync('save-file', {
         'directory': localStorage.directory,
         'file': localStorage.file,
         'log': yaml.safeDump(LogFile)
       });
+    }
+    if (callback) {
+      callback(response);
     }
   }
 
@@ -170,6 +174,14 @@ define(function (require) {
       'code': false,
       'line': line
     }
+  }
+
+  function checkFilenameAvailability(filename, callback) {
+    var response = ipc.sendSync('check-file', {
+      'directory': localStorage.directory,
+      'file': filename
+    });
+    callback(response);
   }
 
   $('#main-input').keydown(function (e) {
@@ -204,12 +216,28 @@ define(function (require) {
   });
   $('#filename').on('focusout', function (event) {
     if (document.activeElement.id !== 'filename') {
-      if (!_.isUndefined(localStorage.file)) {
-        showNotification(Notifications.SavedToNewFile);
+      if (localStorage.file !== $('#filename').text()) {
+        checkFilenameAvailability($('#filename').text(), function (response) {
+          if (response !== 'OK') {
+            if (confirm("This file " + path.join(localStorage.directory, $('#filename').text() + ".yaml") + " already exists! \nOverwrite this file?")) {
+              save();
+            } else {
+              $('#filename').focus();
+            }
+          } else {
+            save();
+          }
+          function save() {
+            localStorage.file = $('#filename').text();
+            updateView();
+            saveFile(function(response) {
+              if (response === "OK") {
+                showNotification(Notifications.SavedToNewFile);
+              }
+            });
+          }
+        });
       }
-      localStorage.file = $('#filename').text();
-      updateView();
-      saveFile();
     }
   });
 

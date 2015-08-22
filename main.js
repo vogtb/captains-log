@@ -19,6 +19,17 @@ ipc.on('save-file', function(event, data) {
   });
 });
 
+ipc.on('check-file', function(event, data) {
+  console.log('checking:  ' + path.join(data.directory, data.file + '.yaml'));
+  fs.exists(path.join(data.directory, data.file + '.yaml'), function (exists) {
+    var status = "OK";
+    if (exists) {
+      status = "ERROR";
+    }
+    event.returnValue = status;
+  });
+});
+
 ipc.on('load-file', function(event, data) {
   fs.readFile(path.join(data.directory, data.file + '.yaml'), 'utf8', function (err, file) {
     if (err) throw err;
