@@ -220,6 +220,18 @@ define(function (require) {
     callback(response);
   }
 
+  function newFile() {
+    $('#log-holder .logline').each(function() {
+      $(this).remove();
+    });
+    $('#filename').focus();
+    $('#filename').text('untitled_log_file');
+    $('#main-input').prop('disabled', true);
+    localStorage.removeItem('file');
+    LogFile = {lines: []};
+    updateView();
+  }
+
   $('#main-input').keydown(function (e) {
     if (e.which === 13 && !e.shiftKey) {
       var time = moment();
@@ -236,6 +248,8 @@ define(function (require) {
   });
 
   $("#change-directory").click(changeDirectory);
+
+  $("#new").click(newFile);
 
   // prevent tab from being inserted into the #filename element
   $('#filename').keydown(function(e) {
@@ -254,7 +268,8 @@ define(function (require) {
   });
   $('#filename').on('focusout', function (event) {
     if (document.activeElement.id !== 'filename') {
-      if (localStorage.file !== $('#filename').text()) {
+      var newFilename = $('#filename').text();
+      if (localStorage.file !== newFilename && newFilename !== 'untitled_log_file') {
         checkFilenameAvailability($('#filename').text(), function (response) {
           if (response !== 'OK') {
             if (confirmOverwrite(localStorage.directory, $('#filename').text())) {
