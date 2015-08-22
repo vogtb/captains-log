@@ -75,10 +75,18 @@ define(function (require) {
     $('#filename').removeClass('hidden');
   }
 
+  function alertChooseValidDirectory() {
+    alert("It doesn't look like you chose valid a directory. \nPlease try again.");
+  }
+
+  function confirmOverwrite(file, directory) {
+    return confirm("This file " + path.join(directory, file + ".yaml") + " already exists! \nOverwrite this file?");
+  }
+
   function chooseDirectory() {
     var directory = remoteCall('choose-directory');
     if (!directory) {
-      alert("It doesn't look like you chose valid a directory. \nPlease try again.")
+      alertChooseValidDirectory();
     } else {
       localStorage.directory = directory;
       updateView();
@@ -88,11 +96,11 @@ define(function (require) {
   function changeDirectory() {
     var directory = remoteCall('choose-directory');
     if (!directory) {
-      alert("It doesn't look like you chose valid a directory. \nPlease try again.")
+      alertChooseValidDirectory();
     } else {
       checkFilenameAvailability(localStorage.file, function (response) {
         if (response !== 'OK') {
-          if (confirm("This file " + path.join(directory, localStorage.file + ".yaml") + " already exists! \nOverwrite this file?")) {
+          if (confirmOverwrite(directory, localStorage.file)) {
             save();
           } else {
             $('#filename').focus();
@@ -249,7 +257,7 @@ define(function (require) {
       if (localStorage.file !== $('#filename').text()) {
         checkFilenameAvailability($('#filename').text(), function (response) {
           if (response !== 'OK') {
-            if (confirm("This file " + path.join(localStorage.directory, $('#filename').text() + ".yaml") + " already exists! \nOverwrite this file?")) {
+            if (confirmOverwrite(localStorage.directory, $('#filename').text())) {
               save();
             } else {
               $('#filename').focus();
