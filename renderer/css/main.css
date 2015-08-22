@@ -52,6 +52,11 @@ i.rename {
   resize: none;
 }
 
+
+.mdl-grid.logline {
+  padding: 4px 5px;
+}
+
 .logline {
   border-top: solid 1px #EEEEEE;
 }
@@ -65,9 +70,12 @@ i.rename {
   font-size: 15px;
 }
 
-.logline .text pre {
+.logline .text pre, .logline .text pre code {
+  font-size: 14px;
   margin: 4px 0px;
   white-space: pre-wrap;
+  word-wrap: break-word;
+  font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
 }
 
 .logline a {
