@@ -85,6 +85,34 @@ define(function (require) {
     }
   }
 
+  function changeDirectory() {
+    var directory = remoteCall('choose-directory');
+    if (!directory) {
+      alert("It doesn't look like you chose valid a directory. \nPlease try again.")
+    } else {
+      checkFilenameAvailability(localStorage.file, function (response) {
+        if (response !== 'OK') {
+          if (confirm("This file " + path.join(directory, localStorage.file + ".yaml") + " already exists! \nOverwrite this file?")) {
+            save();
+          } else {
+            $('#filename').focus();
+          }
+        } else {
+          save();
+        }
+        function save() {
+          localStorage.directory = directory;
+          updateView();
+          saveFile(function(response) {
+            if (response === "OK") {
+              showNotification(Notifications.SavedToNewFile);
+            }
+          });
+        }
+      });
+    }
+  }
+
   function loadFile() {
     if (_.isUndefined(localStorage.directory) || _.isUndefined(localStorage.file)) {
       if (_.isUndefined(localStorage.localLogFile)) {
@@ -198,6 +226,8 @@ define(function (require) {
       return false;
     }
   });
+
+  $("#change-directory").click(changeDirectory);
 
   // prevent tab from being inserted into the #filename element
   $('#filename').keydown(function(e) {
