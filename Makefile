@@ -16,6 +16,7 @@ clean:
 
 package: clean dep
 	@nicns --in icons/icon.png --out icons/icon.icns
+	@jsx -x jsx renderer/jsx/ renderer/js/
 	@mkdir -p build
 	@electron-packager ./ CaptainsLog \
 	  --out=build \
