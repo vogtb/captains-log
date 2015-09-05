@@ -52,41 +52,14 @@
   </head>
   <body>
     <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
-      <header class="mdl-layout__header">
-        <div class="mdl-layout__header-row menu">
-          <span id="logo-holder" class="hidden"></span>
-          <span class="mdl-layout-title filename hidden" id="filename" contentEditable="true">untitlted_log_file</span>
-          <i class="material-icons warning hidden" id="warning">warning</i>
-          <div class="mdl-layout-spacer"></div>
-          <div id="notification" class="notification hidden"></div>
-          <div class="mdl-layout-spacer"></div>
-          <span class="hidden directory" id="directory"></span>
-          <button class="mdl-button mdl-js-button mdl-button--icon" id="change-directory">
-            <i class="material-icons">folder_open</i>
-          </button>
-          <button class="mdl-button mdl-js-button mdl-button--icon" id="new">
-            <i class="material-icons">add</i>
-          </button>
-        </div>
+      <header class="mdl-layout__header" id="react-nav">
       </header>
-      <main class="mdl-layout__content" id="page-content-container">
-        <div class="page-content" id="log-holder">
-          <div class="mdl-grid hidden" id="directions">
-            <div class="mdl-cell mdl-cell--12-col">
-              <h5>Where would you like to store the logs?</h5>
-              <button class="mdl-button mdl-js-button mdl-button--raised" id="choose-directory">
-                Choose Directory
-              </button>
-            </div>
-          </div>
+      <main class="mdl-layout__content">
+        <div class="page-content" id="react-logbox">
         </div>
       </main>
     </div>
-    <div class="page-content input-panel">
-      <div class="mdl-textfield mdl-js-textfield">
-        <textarea class="mdl-textfield__input main-input" type="text" rows= "4" id="main-input"></textarea>
-        <label class="mdl-textfield__label" for="main-input">Log here...</label>
-      </div>
+    <div class="page-content input-panel" id="react-main-input">
     </div>
     <div id="tool-tips">
       <div class="mdl-tooltip" for="warning">WARNING: An untitled logfile will not be saved to disk</div>
