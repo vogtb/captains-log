@@ -16,47 +16,67 @@ define(function (require) {
     }
   });
 
-  var LogBox = React.createClass({
+  var LogFile = React.createClass({
+    loadFileFromDisk: function () {
+      if (localStorage.file && localStorage.directory) {
+        // var file = ipc.sendSync('load-file', {
+        //   'directory': localStorage.directory,
+        //   'file': localStorage.file
+        // });
+        // this.setState({data: file});
+      }
+    },
     componentDidMount: function () {
-      // //actually load data
-      // var file = ipc.sendSync('load-file', {
-      //   'directory': localStorage.directory,
-      //   'file': localStorage.file
-      // });
+      this.loadFileFromDisk();
+      window.addEventListener('localStorageUpdate', this.handleLocalStorageUpdate);
+    },
+    handleLocalStorageUpdate: function (e) {
+      this.render();
     },
     getInitialState: function() {
-      // this should be empty. mocking out data for development.
       return {
         data: {
-          lines: [{
-            line: "This is a line",
-            timestamp: "This is a timestamp"
-          },
-          {
-            line: "This is a line",
-            timestamp: "This is a timestamp"
-          }]
+          lines: []
         }
       };
     },
     render: function () {
+      var content = [];
+      content.push(<Instructions visible={!localStorage.directory}/>);
+      if (this.state.data.lines.length) {
+        var loglines = this.state.data.lines.map(function(line) {
+          return <LogLine data={line}/>;
+        });
+        content.concat(loglines);
+      }
       return (
-        <div>
-          {this.state.data.lines.map(function(line) {
-            return <LogLine data={line}/>;
-          })}
-        </div>
+        <div>{content}</div>
       );
     }
   });
 
   var Instructions = React.createClass({
+    chooseDirectory: function () {
+      var directory = remoteCall('choose-directory');
+      if (!directory) {
+        alertChooseValidDirectory();
+      } else {
+        localStorage.directory = directory;
+        this.setState({visible: false});
+      }
+    },
+    getInitialState: function() {
+      return {
+        visible: this.props.visible
+      };
+    },
     render: function () {
+      var classNameForInstructions = "mdl-grid " + (this.state.visible ? "" : "hidden");
       return (
-        <div className="mdl-grid hidden">
+        <div className={classNameForInstructions}>
           <div className="mdl-cell mdl-cell--12-col">
             <h5>Where would you like to store the logs?</h5>
-            <button className="mdl-button mdl-js-button mdl-button--raised">Choose Directory</button>
+            <button className="mdl-button mdl-js-button mdl-button--raised" onClick={this.chooseDirectory}>Choose Directory</button>
           </div>
         </div>
       );
@@ -74,26 +94,24 @@ define(function (require) {
     }
   });
 
-  var FileName = React.createClass({
-    render: function () {
-      return (
-        <span className="mdl-layout-title filename" id="filename" contentEditable="true">untitlted_log_file</span>
-      );
-    }
-  });
-
   var Nav = React.createClass({
+    componentDidMount: function () {
+      window.addEventListener('localStorageUpdate', this.render);
+    },
     render: function () {
-      var logoPath = path.join(__dirname, 'img', 'icon.png');
+      var fullPath = (localStorage.directory && localStorage.file) ? path.join(localStorage.directory, localStorage.file + '.yaml') : '';
+      var classNameForWarning = "material-icons warning " + (localStorage.file ? "hidden" : "");
       return (
         <div className="mdl-layout__header-row menu">
-          <span><img className="logo" src={logoPath} /></span>
-          <FileName />
-          <i className="material-icons warning hidden" id="warning">warning</i>
+          <span><img className="logo" src={path.join(__dirname, 'img', 'icon.png')} /></span>
+          <span className="mdl-layout-title filename" id="filename" contentEditable="true">
+            {localStorage.file ? localStorage.file : 'untitlted_log_file'}
+          </span>
+          <i className={classNameForWarning} id="warning">warning</i>
           <div className="mdl-layout-spacer"></div>
           <div id="notification" className="notification hidden"></div>
           <div className="mdl-layout-spacer"></div>
-          <span className="hidden directory" id="directory"></span>
+          <span className="directory" id="directory">{fullPath}</span>
           <button className="mdl-button mdl-js-button mdl-button--icon" id="change-directory">
             <i className="material-icons">folder_open</i>
           </button>
@@ -106,8 +124,8 @@ define(function (require) {
   });
 
   React.render(
-    <LogBox />,
-    document.getElementById('react-logbox')
+    <LogFile />,
+    document.getElementById('react-logfile')
   );
   React.render(
     <Nav />,
