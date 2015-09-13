@@ -1,8 +1,9 @@
 define(function (require) {
   var React = require('react'),
     moment = require('moment'),
-    _ = require('underscore'), //maybe not necessary?
-    yaml = require('yaml');
+    _ = require('underscore'),
+    yaml = require('yaml'),
+    supportedLanguages = hljs.listLanguages();
 
 
   var LogLine = React.createClass({
@@ -10,7 +11,7 @@ define(function (require) {
       return (
         <div className="mdl-grid logline">
           <div className="mdl-cell mdl-cell--10-col text">{this.props.data.line}</div>
-          <div className="mdl-cell mdl-cell--2-col timestamp">{this.props.data.timestamp}</div>
+          <div className="mdl-cell mdl-cell--2-col timestamp">{this.props.data.time}</div>
         </div>
       );
     }
@@ -19,11 +20,16 @@ define(function (require) {
   var LogFile = React.createClass({
     loadFileFromDisk: function () {
       if (localStorage.file && localStorage.directory) {
-        // var file = ipc.sendSync('load-file', {
-        //   'directory': localStorage.directory,
-        //   'file': localStorage.file
-        // });
-        // this.setState({data: file});
+        var file = yaml.safeLoad(ipc.sendSync('load-file', {
+          'directory': localStorage.directory,
+          'file': localStorage.file
+        }));
+        this.setState({data: file});
+      } else {
+        if (!localStorage.localLogFile) {
+          localStorage.localLogFile = JSON.stringify({data: {lines: []}});
+        }
+        this.setState(JSON.parse(localStorage.localLogFile));
       }
     },
     saveFileToDisk: function () {
@@ -32,6 +38,7 @@ define(function (require) {
         localStorage.localLogFile = JSON.stringify(this.state.data);
         response = "OK";
       } else {
+        console.log('saving file:', yaml.safeDump(this.state.data));
         response = ipc.sendSync('save-file', {
           'directory': localStorage.directory,
           'file': localStorage.file,
@@ -44,8 +51,14 @@ define(function (require) {
       this.loadFileFromDisk();
       window.addEventListener('localStorageUpdate', this.handleLocalStorageUpdate);
       window.addEventListener('saveFileEvent', this.saveFileToDisk);
+      window.addEventListener('addLineEvent', this.handleAddLineEvent);
     },
-    handleLocalStorageUpdate: function (e) {
+    handleAddLineEvent: function (event) {
+      this.state.data.lines.push(event.detail);
+      this.forceUpdate();
+      //TODO make the save
+    },
+    handleLocalStorageUpdate: function (event) {
       this.render();
     },
     getInitialState: function() {
@@ -62,8 +75,11 @@ define(function (require) {
         var loglines = this.state.data.lines.map(function(line) {
           return <LogLine data={line}/>;
         });
-        content.concat(loglines);
+        content = content.concat(loglines);
       }
+      console.log((
+        <div>{content}</div>
+      ));
       return (
         <div>{content}</div>
       );
@@ -91,7 +107,8 @@ define(function (require) {
         <div className={classNameForInstructions}>
           <div className="mdl-cell mdl-cell--12-col">
             <h5>Where would you like to store the logs?</h5>
-            <button className="mdl-button mdl-js-button mdl-button--raised" onClick={this.chooseDirectory}>
+            <button className="mdl-button mdl-js-button mdl-button--raised"
+                onClick={this.chooseDirectory}>
               Choose Directory
             </button>
           </div>
@@ -101,10 +118,65 @@ define(function (require) {
   });
 
   var MainInput = React.createClass({
+    componentDidMount: function () {
+      window.addEventListener('localStorageUpdate', this.handleLocalStorageUpdate);
+    },
+    parseLineToObject: function (line) {
+      var languagesDetected = _.filter(supportedLanguages, function(language) {
+        return line.startsWith('/' + language + ' ');
+      });
+      if (!_.isEmpty(languagesDetected)) {
+        var toSlice = '/' + _.first(languagesDetected) + ' ';
+        line = line.slice(toSlice.length);
+        return {
+          'code': true,
+          'language': languagesDetected,
+          'line': line
+        }
+      } else if (line.startsWith('/code')) {
+        line = line.slice('/code '.length);
+        return {
+          'code': true,
+          'language': 'javascript',
+          'line': line
+        }
+      }
+      return {
+        'code': false,
+        'language': false,
+        'line': line
+      }
+    },
+    handleEnterKey: function (event) {
+      var time = moment();
+      var lineObject = this.parseLineToObject(event.target.value);
+      lineObject.time = time.format("ddd MMM DD YYYY, h:mm a");
+      lineObject.timestamp = time.valueOf();
+      window.dispatchEvent(new CustomEvent("addLineEvent", {'detail': lineObject}));
+      event.target.value = '';
+      return false;
+    },
+    handleKeyDown: function (event) {
+      if (event.which === 13 && !event.shiftKey) {
+        this.handleEnterKey(event);
+      }
+    },
+    handleLocalStorageUpdate: function (event) {
+      this.setState({
+        disabled: !(localStorage.file && localStorage.directory)
+      });
+      this.forceUpdate();
+    },
+    getInitialState: function () {
+      return {
+        disabled: !(localStorage.file && localStorage.directory)
+      }
+    },
     render: function () {
       return (
         <div className="mdl-textfield mdl-js-textfield">
-          <textarea className="mdl-textfield__input main-input" type="text" rows= "4"></textarea>
+          <textarea className="mdl-textfield__input main-input" type="text" rows="4"
+              disabled={this.state.disabled} onKeyDown={this.handleKeyDown}></textarea>
           <label className="mdl-textfield__label" for="main-input">Log here...</label>
         </div>
       );
@@ -145,13 +217,13 @@ define(function (require) {
       callback(response);
     },
     confirmOverwrite: function (file, directory) {
-      return confirm("This file " + path.join(directory, file + ".yaml") + " already exists! \nOverwrite this file?");
+      return confirm("This file " + path.join(directory, file + ".yaml") +
+          " already exists! \nOverwrite this file?");
     },
     handleBlur: function (event) {
       var newFileName = event.target.innerHTML;
       if (localStorage.file !== newFileName && newFileName !== 'untitled_log_file') {
         this.checkFilenameAvailability(newFileName, function (response) {
-          console.log(response);
           if (response !== 'OK') {
             if (this.confirmOverwrite(localStorage.directory, newFileName)) {
               localStorage.file = newFileName;
@@ -161,7 +233,6 @@ define(function (require) {
               console.log("TODO: re-focus on the filename component");
             }
           } else {
-            console.log('about to set localStorage, trigger localStorageUpdate, saveFileEvent');
             localStorage.file = newFileName;
             window.dispatchEvent(new CustomEvent("localStorageUpdate", {}));
             window.dispatchEvent(new CustomEvent("saveFileEvent", {}));
@@ -172,7 +243,8 @@ define(function (require) {
     render: function () {
       return (
         <span className="mdl-layout-title filename" id="filename" contentEditable="true"
-            onKeyPress={this.handleKeyPress} onKeyDown={this.handleKeyDown} onBlur={this.handleBlur}>
+            onKeyPress={this.handleKeyPress} onKeyDown={this.handleKeyDown}
+            onBlur={this.handleBlur}>
           {localStorage.file ? localStorage.file : 'untitlted_log_file'}
         </span>
       );
