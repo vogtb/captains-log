@@ -1,7 +1,7 @@
 define(function (require) {
   var React = require('react'),
-    moment = require('moment')
-    _ = require('underscore'),
+    moment = require('moment'),
+    _ = require('underscore'), //maybe not necessary?
     yaml = require('yaml');
 
 
@@ -26,9 +26,24 @@ define(function (require) {
         // this.setState({data: file});
       }
     },
+    saveFileToDisk: function () {
+      var response;
+      if (!localStorage.directory || !localStorage.file) {
+        localStorage.localLogFile = JSON.stringify(this.state.data);
+        response = "OK";
+      } else {
+        response = ipc.sendSync('save-file', {
+          'directory': localStorage.directory,
+          'file': localStorage.file,
+          'log': yaml.safeDump(this.state.data)
+        });
+      }
+      this.render();
+    },
     componentDidMount: function () {
       this.loadFileFromDisk();
       window.addEventListener('localStorageUpdate', this.handleLocalStorageUpdate);
+      window.addEventListener('saveFileEvent', this.saveFileToDisk);
     },
     handleLocalStorageUpdate: function (e) {
       this.render();
@@ -76,7 +91,9 @@ define(function (require) {
         <div className={classNameForInstructions}>
           <div className="mdl-cell mdl-cell--12-col">
             <h5>Where would you like to store the logs?</h5>
-            <button className="mdl-button mdl-js-button mdl-button--raised" onClick={this.chooseDirectory}>Choose Directory</button>
+            <button className="mdl-button mdl-js-button mdl-button--raised" onClick={this.chooseDirectory}>
+              Choose Directory
+            </button>
           </div>
         </div>
       );
@@ -94,19 +111,89 @@ define(function (require) {
     }
   });
 
-  var Nav = React.createClass({
+  var FileName = React.createClass({
     componentDidMount: function () {
-      window.addEventListener('localStorageUpdate', this.render);
+      window.addEventListener('localStorageUpdate', this.handleLocalStorageUpdate);
+      window.addEventListener('saveFileEvent', this.handleSaveFileEvent);
+    },
+    handleLocalStorageUpdate: function () {
+      this.render();
+    },
+    handleSaveFileEvent: function () {
+      this.render();
+    },
+    handleKeyPress: function (event) {
+      if (event.which !== 0) {
+        var character = String.fromCharCode(event.which);
+        if (event.which === 13) {
+          // Move focus, user is done entering the name.
+        }
+        return !/[^a-zA-Z0-9_-]/.test(character);
+      }
+    },
+    handleKeyDown: function (event) {
+      // prevent tabs from being entered.
+      if (event.which === 9) {
+        event.preventDefault();
+      }
+    },
+    checkFilenameAvailability: function (fileName, callback) {
+      var response = ipc.sendSync('check-file', {
+        'directory': localStorage.directory,
+        'file': fileName
+      });
+      callback(response);
+    },
+    confirmOverwrite: function (file, directory) {
+      return confirm("This file " + path.join(directory, file + ".yaml") + " already exists! \nOverwrite this file?");
+    },
+    handleBlur: function (event) {
+      var newFileName = event.target.innerHTML;
+      if (localStorage.file !== newFileName && newFileName !== 'untitled_log_file') {
+        this.checkFilenameAvailability(newFileName, function (response) {
+          console.log(response);
+          if (response !== 'OK') {
+            if (this.confirmOverwrite(localStorage.directory, newFileName)) {
+              localStorage.file = newFileName;
+              window.dispatchEvent(new CustomEvent("localStorageUpdate", {}));
+              window.dispatchEvent(new CustomEvent("saveFileEvent", {}));
+            } else {
+              console.log("TODO: re-focus on the filename component");
+            }
+          } else {
+            console.log('about to set localStorage, trigger localStorageUpdate, saveFileEvent');
+            localStorage.file = newFileName;
+            window.dispatchEvent(new CustomEvent("localStorageUpdate", {}));
+            window.dispatchEvent(new CustomEvent("saveFileEvent", {}));
+          }
+        });
+      }
     },
     render: function () {
-      var fullPath = (localStorage.directory && localStorage.file) ? path.join(localStorage.directory, localStorage.file + '.yaml') : '';
+      return (
+        <span className="mdl-layout-title filename" id="filename" contentEditable="true"
+            onKeyPress={this.handleKeyPress} onKeyDown={this.handleKeyDown} onBlur={this.handleBlur}>
+          {localStorage.file ? localStorage.file : 'untitlted_log_file'}
+        </span>
+      );
+    }
+  });
+
+  var Nav = React.createClass({
+    componentDidMount: function () {
+      window.addEventListener('localStorageUpdate', this.handleLocalStorageUpdate);
+    },
+    handleLocalStorageUpdate: function (e) {
+      this.forceUpdate();
+    },
+    render: function () {
+      var fullPath = (localStorage.directory && localStorage.file) ?
+          path.join(localStorage.directory, localStorage.file + '.yaml') : '';
       var classNameForWarning = "material-icons warning " + (localStorage.file ? "hidden" : "");
       return (
         <div className="mdl-layout__header-row menu">
           <span><img className="logo" src={path.join(__dirname, 'img', 'icon.png')} /></span>
-          <span className="mdl-layout-title filename" id="filename" contentEditable="true">
-            {localStorage.file ? localStorage.file : 'untitlted_log_file'}
-          </span>
+          <FileName />
           <i className={classNameForWarning} id="warning">warning</i>
           <div className="mdl-layout-spacer"></div>
           <div id="notification" className="notification hidden"></div>
