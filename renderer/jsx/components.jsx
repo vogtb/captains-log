@@ -5,7 +5,6 @@ define(function (require) {
     yaml = require('yaml'),
     supportedLanguages = hljs.listLanguages();
 
-
   var LogLine = React.createClass({
     render: function () {
       return (
@@ -239,11 +238,12 @@ define(function (require) {
           " already exists! \nOverwrite this file?");
     },
     handleBlur: function (event) {
+      var self = this;
       var newFileName = event.target.innerHTML;
       if (localStorage.file !== newFileName && newFileName !== 'untitled_log_file') {
         this.checkFilenameAvailability(newFileName, function (response) {
           if (response !== 'OK') {
-            if (this.confirmOverwrite(localStorage.directory, newFileName)) {
+            if (self.confirmOverwrite(localStorage.directory, newFileName)) {
               localStorage.file = newFileName;
               window.dispatchEvent(new CustomEvent("localStorageUpdate", {}));
               window.dispatchEvent(new CustomEvent("saveFileEvent", {}));
@@ -282,7 +282,8 @@ define(function (require) {
       var classNameForWarning = "material-icons warning " + (localStorage.file ? "hidden" : "");
       return (
         <div className="mdl-layout__header-row menu">
-          <span><img className="logo" src={path.join(__dirname, 'img', 'icon.png')} /></span>
+          <span><img className="logo" draggable="false"
+              src={path.join(__dirname, 'img', 'icon.png')} /></span>
           <FileName />
           <i className={classNameForWarning} id="warning">warning</i>
           <div className="mdl-layout-spacer"></div>
