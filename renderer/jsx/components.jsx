@@ -10,7 +10,25 @@ define(function (require) {
     render: function () {
       return (
         <div className="mdl-grid logline">
-          <div className="mdl-cell mdl-cell--10-col text">{this.props.data.line}</div>
+          <div className="mdl-cell mdl-cell--10-col text" id="logline-text">
+            {this.props.data.line}
+          </div>
+          <div className="mdl-cell mdl-cell--2-col timestamp">{this.props.data.time}</div>
+        </div>
+      );
+    }
+  });
+
+  var LogLineCode = React.createClass({
+    componentDidMount: function () {
+      hljs.highlightBlock(this.getDOMNode().childNodes[0].childNodes[0].childNodes[0]);
+    },
+    render: function () {
+      return (
+        <div className="mdl-grid logline">
+          <div className="mdl-cell mdl-cell--10-col text">
+            <pre><code className={this.props.data.language}>{this.props.data.line}</code></pre>
+          </div>
           <div className="mdl-cell mdl-cell--2-col timestamp">{this.props.data.time}</div>
         </div>
       );
@@ -55,8 +73,8 @@ define(function (require) {
     },
     handleAddLineEvent: function (event) {
       this.state.data.lines.push(event.detail);
+      this.saveFileToDisk();
       this.forceUpdate();
-      //TODO make the save
     },
     handleLocalStorageUpdate: function (event) {
       this.render();
@@ -73,7 +91,7 @@ define(function (require) {
       content.push(<Instructions visible={!localStorage.directory}/>);
       if (this.state.data.lines.length) {
         var loglines = this.state.data.lines.map(function(line) {
-          return <LogLine data={line}/>;
+          return line.code ? <LogLineCode data={line}/> : <LogLine data={line}/>;
         });
         content = content.concat(loglines);
       }

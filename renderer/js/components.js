@@ -10,7 +10,25 @@ define(function (require) {
     render: function () {
       return (
         React.createElement("div", {className: "mdl-grid logline"}, 
-          React.createElement("div", {className: "mdl-cell mdl-cell--10-col text"}, this.props.data.line), 
+          React.createElement("div", {className: "mdl-cell mdl-cell--10-col text", id: "logline-text"}, 
+            this.props.data.line
+          ), 
+          React.createElement("div", {className: "mdl-cell mdl-cell--2-col timestamp"}, this.props.data.time)
+        )
+      );
+    }
+  });
+
+  var LogLineCode = React.createClass({displayName: "LogLineCode",
+    componentDidMount: function () {
+      hljs.highlightBlock(this.getDOMNode().childNodes[0].childNodes[0].childNodes[0]);
+    },
+    render: function () {
+      return (
+        React.createElement("div", {className: "mdl-grid logline"}, 
+          React.createElement("div", {className: "mdl-cell mdl-cell--10-col text"}, 
+            React.createElement("pre", null, React.createElement("code", {className: this.props.data.language}, this.props.data.line))
+          ), 
           React.createElement("div", {className: "mdl-cell mdl-cell--2-col timestamp"}, this.props.data.time)
         )
       );
@@ -55,8 +73,8 @@ define(function (require) {
     },
     handleAddLineEvent: function (event) {
       this.state.data.lines.push(event.detail);
+      this.saveFileToDisk();
       this.forceUpdate();
-      //TODO make the save
     },
     handleLocalStorageUpdate: function (event) {
       this.render();
@@ -73,7 +91,7 @@ define(function (require) {
       content.push(React.createElement(Instructions, {visible: !localStorage.directory}));
       if (this.state.data.lines.length) {
         var loglines = this.state.data.lines.map(function(line) {
-          return React.createElement(LogLine, {data: line});
+          return line.code ? React.createElement(LogLineCode, {data: line}) : React.createElement(LogLine, {data: line});
         });
         content = content.concat(loglines);
       }
