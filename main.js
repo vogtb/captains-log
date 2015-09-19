@@ -61,8 +61,10 @@ app.on('window-all-closed', function() {
 
 app.on('ready', function() {
   mainWindow = new BrowserWindow({
-    width: 1240,
-    height: 780
+    'width': 1240,
+    'height': 780,
+    'min-width': 1000,
+    'min-height': 600
   });
   mainWindow.loadUrl('file://' + __dirname + '/renderer/renderer.html');
   mainWindow.on('closed', function() {

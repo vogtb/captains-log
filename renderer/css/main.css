@@ -27,7 +27,6 @@ i.rename {
 }
 
 .input-panel {
-  height: 16%;
   width: calc(100% - 34px);
   margin: 0 auto;
   padding: 0px 17px;
@@ -86,6 +85,12 @@ i.rename {
   white-space: pre-wrap;
   word-wrap: break-word;
   font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+}
+
+@media (max-width: 1024px) {
+  .logline .timestamp {
+    font-size: 13px;
+  }
 }
 
 .logline a {

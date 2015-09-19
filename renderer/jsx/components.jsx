@@ -9,7 +9,7 @@ define(function (require) {
     render: function () {
       return (
         <div className="mdl-grid logline">
-          <div className="mdl-cell mdl-cell--10-col text" id="logline-text">
+          <div className="mdl-cell mdl-cell--10-col text">
             {this.props.data.line}
           </div>
           <div className="mdl-cell mdl-cell--2-col timestamp">{this.props.data.time}</div>
@@ -167,7 +167,7 @@ define(function (require) {
       }
       var time = moment();
       var lineObject = this.parseLineToObject(event.target.value);
-      lineObject.time = time.format("ddd MMM DD YYYY, h:mm a");
+      lineObject.time = time.format("MMM DD YYYY, h:mm a");
       lineObject.timestamp = time.valueOf();
       window.dispatchEvent(new CustomEvent("addLineEvent", {'detail': lineObject}));
       event.target.value = "";
