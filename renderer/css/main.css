@@ -3,6 +3,8 @@ body {
   min-width: 780px;
 }
 
+
+
 .menu {
   background: #2196F3;
   color: white;
@@ -48,6 +50,19 @@ i.rename {
 
 .input-panel textarea {
   resize: none;
+}
+
+/*Force scrollbar visibility when input is scrollable*/
+.input-panel ::-webkit-scrollbar {
+    -webkit-appearance: none;
+    width: 7px;
+    z-index: 100000;
+}
+.input-panel ::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background-color: rgba(0,0,0,.5);
+    -webkit-box-shadow: 0 0 1px rgba(255,255,255,.5);
+    z-index: 100000;
 }
 
 .notification.error {
