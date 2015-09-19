@@ -67,12 +67,13 @@ i.rename {
 }
 
 .logline {
-  border-top: solid 1px #EEEEEE;
+  border-bottom: solid 1px #EEEEEE;
 }
 
 /*needs to be dynamic, but it works for now.*/
 .logline:last-child {
   padding-bottom: 140px;
+  border-bottom: none;
 }
 
 .logline .text {
