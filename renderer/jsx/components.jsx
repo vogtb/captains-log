@@ -55,7 +55,7 @@ define(function (require) {
         localStorage.localLogFile = JSON.stringify(this.state.data);
         response = "OK";
       } else {
-        console.log('saving file:', yaml.safeDump(this.state.data));
+        console.log('saving file');
         response = ipc.sendSync('save-file', {
           'directory': localStorage.directory,
           'file': localStorage.file,
@@ -94,9 +94,6 @@ define(function (require) {
         });
         content = content.concat(loglines);
       }
-      console.log((
-        <div>{content}</div>
-      ));
       return (
         <div>{content}</div>
       );
@@ -165,12 +162,15 @@ define(function (require) {
       }
     },
     handleEnterKey: function (event) {
+      if (event.target.value === '' && event.target.value === '\n') {
+        event.target.value = " ";
+      }
       var time = moment();
       var lineObject = this.parseLineToObject(event.target.value);
       lineObject.time = time.format("ddd MMM DD YYYY, h:mm a");
       lineObject.timestamp = time.valueOf();
       window.dispatchEvent(new CustomEvent("addLineEvent", {'detail': lineObject}));
-      event.target.value = '';
+      event.target.value = "";
       return false;
     },
     handleKeyDown: function (event) {
