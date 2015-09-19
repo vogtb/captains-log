@@ -31,6 +31,5 @@ package: clean dep
 
 dist: package
 	@mkdir -p dist
-	@rm build/CaptainsLog-darwin-x64/LICENSE
 	@rm build/CaptainsLog-darwin-x64/version
 	@cd build && zip -r ../dist/CaptainsLog-darwin-x64-${VERSION}.zip CaptainsLog-darwin-x64
