@@ -7,7 +7,7 @@ requirejs.config({
       react: 'react.min',
       moment: 'moment',
       underscore: 'underscore.min',
-      yaml: 'js-yaml.min',
+      yaml: 'js-yaml',
       highlight: 'highlight.pack'
     },
     shim: {
@@ -16,7 +16,7 @@ requirejs.config({
       'highlight': 'highlight.pack',
       'moment': 'moment',
       'underscore': 'underscore.min',
-      'yaml': 'js-yaml.min',
+      'yaml': 'js-yaml',
       'handlebars': 'handlebars-v3.0.3',
       components: {
         deps: ['jquery', 'react', 'yaml', 'moment', 'underscore', 'highlight']
