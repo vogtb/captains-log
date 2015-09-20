@@ -1,6 +1,7 @@
 var app = require('app'),
   fs = require('fs'),
   ipc = require('ipc'),
+  spawn = require('child_process').spawn,
   _ = require('underscore'),
   path = require('path'),
   BrowserWindow = require('browser-window'),
@@ -37,7 +38,6 @@ ipc.on('load-file', function(event, data) {
   });
 });
 
-
 ipc.on('choose-directory', function(event, data) {
   dialog.showOpenDialog(mainWindow, {
     properties: ['openDirectory'],
@@ -53,6 +53,10 @@ ipc.on('choose-directory', function(event, data) {
       event.returnValue = false;
     }
   });
+});
+
+ipc.on('open-link', function(event, data) {
+  spawn('open', [data.url]);
 });
 
 app.on('window-all-closed', function() {

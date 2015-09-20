@@ -27,8 +27,10 @@
         document.head.appendChild(link);
       }
 
-      function remoteCall(name) {
-        return ipc.sendSync(name, name);
+      function openLink(url) {
+        ipc.sendSync('open-link', {
+          'url': url
+        });
       }
 
       loadAsset('/css/main.css');

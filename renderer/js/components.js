@@ -3,15 +3,22 @@ define(function (require) {
     moment = require('moment'),
     _ = require('underscore'),
     yaml = require('yaml'),
-    supportedLanguages = hljs.listLanguages();
+    supportedLanguages = hljs.listLanguages(),
+    encodeLineToHTML = function (text) {
+      text = text
+          .replace(/(\r\n|\n|\r)/gm, '<br>')
+          .replace(/(\b(https?|ftp):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gim,
+              '<a href="#" onclick="openLink(\'$1\')">$1</a>')
+          .replace(/(^|[^\/])(www\.[\S]+(\b|$))/gim, '$1<a href="#">$2</a>');
+      return {__html: text};
+    };
 
   var LogLine = React.createClass({displayName: "LogLine",
     render: function () {
       return (
         React.createElement("div", {className: "mdl-grid logline"}, 
-          React.createElement("div", {className: "mdl-cell mdl-cell--10-col text"}, 
-            this.props.data.line
-          ), 
+          React.createElement("div", {className: "mdl-cell mdl-cell--10-col text", 
+              dangerouslySetInnerHTML: encodeLineToHTML(this.props.data.line)}), 
           React.createElement("div", {className: "mdl-cell mdl-cell--2-col timestamp"}, this.props.data.time)
         )
       );
@@ -102,7 +109,7 @@ define(function (require) {
 
   var Instructions = React.createClass({displayName: "Instructions",
     chooseDirectory: function () {
-      var directory = remoteCall('choose-directory');
+      var directory = ipc.sendSync('choose-directory', 'choose-directory');;
       if (!directory) {
         alertChooseValidDirectory();
       } else {
