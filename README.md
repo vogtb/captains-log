@@ -3,8 +3,7 @@ Timestamped notes written to a yaml file in the directory of your choice.
 
 ![alt tag](/page/img/demo.gif)
 
-When you're working on a problem and you're trying out different solutions, it's easy to lose track of what you've done. You might keep notes, but days later you don't remember which commands you ran, when you ran them, and what the results were. 
-By timestamping your notes and writing them to a yaml file containing the raw text, you can keep your notes and grep them too.
+When you're writing code it's easy to lose track of what you did and when you did it. By timestamping your notes and writing them to a yaml file containing the raw text, you can keep your notes and grep them too.
 
 ## Development
 To run the electron app and see your changes on the fly you need to run:
