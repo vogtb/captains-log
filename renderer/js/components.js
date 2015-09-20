@@ -11,10 +11,16 @@ define(function (require) {
               '<a href="#" onclick="openLink(\'$1\')">$1</a>')
           .replace(/(^|[^\/])(www\.[\S]+(\b|$))/gim, '$1<a href="#">$2</a>');
       return {__html: text};
+    },
+    Messages = {
+      FILE_OVERWRITTEN: "File overwritten.",
+      FILE_CREATED: "File created.",
+      SET_DIRECTORY: "Directory set.",
+      NEW_FILE_CREATED: "New file created."
     };
 
   var Util = {
-    confirmOverwrite: function (file, directory) {
+    confirmOverwrite: function (directory, file) {
       return confirm("This file " + path.join(directory, file + ".yaml") +
           " already exists! \nOverwrite this file?");
     },
@@ -76,13 +82,11 @@ define(function (require) {
       }
     },
     saveFileToDisk: function () {
-      var response;
       if (!localStorage.directory || !localStorage.file) {
         localStorage.localLogFile = JSON.stringify(this.state.data);
-        response = "OK";
       } else {
         console.log('saving file');
-        response = ipc.sendSync('save-file', {
+        var response = ipc.sendSync('save-file', {
           'directory': localStorage.directory,
           'file': localStorage.file,
           'log': yaml.safeDump(this.state.data)
@@ -149,8 +153,13 @@ define(function (require) {
       } else {
         if (localStorage.file) {
           if (Util.checkPath(localStorage.file, directory) != 'OK') {
-            if (Util.confirmOverwrite(localStorage.file, directory)) {
+            if (Util.confirmOverwrite(directory, localStorage.file)) {
               this.setDirectory(directory);
+              window.dispatchEvent(new CustomEvent("showNotification", {
+                'detail': {
+                  'message': Messages.FILE_OVERWRITTEN
+                }
+              }));
             }
           } else {
             this.setDirectory(directory);
@@ -283,14 +292,16 @@ define(function (require) {
     checkFilenameAvailability: function (fileName, callback) {
       callback(Util.checkPath(fileName, localStorage.directory));
     },
-    confirmOverwrite: function (file, directory) {
-      return confirm("This file " + path.join(directory, file + ".yaml") +
-          " already exists! \nOverwrite this file?");
+    confirmOverwrite: function (directory, file) {
+      return confirm("The following file already exists:\n\n"
+          + path.join(directory, file + ".yaml")
+          + "\n\nWould you like to overwrite this file?");
     },
     handleBlur: function (event) {
       var self = this;
       var newFileName = event.target.innerHTML;
-      if (localStorage.file !== newFileName && newFileName !== 'untitled_log_file') {
+      if (localStorage.file !== newFileName && newFileName !== 'untitled_log_file'
+          && document.hasFocus()) {
         if (localStorage.directory) {
           this.checkFilenameAvailability(newFileName, function (response) {
             if (response !== 'OK') {
@@ -298,13 +309,23 @@ define(function (require) {
                 localStorage.file = newFileName;
                 window.dispatchEvent(new CustomEvent("localStorageUpdate", {}));
                 window.dispatchEvent(new CustomEvent("saveFileEvent", {}));
+                window.dispatchEvent(new CustomEvent("showNotification", {
+                  'detail': {
+                    'message': Messages.FILE_OVERWRITTEN
+                  }
+                }));
               } else {
-                console.log("TODO: re-focus on the filename component");
+                React.findDOMNode(this.refs.filename).focus();
               }
             } else {
               localStorage.file = newFileName;
               window.dispatchEvent(new CustomEvent("localStorageUpdate", {}));
               window.dispatchEvent(new CustomEvent("saveFileEvent", {}));
+              window.dispatchEvent(new CustomEvent("showNotification", {
+                'detail': {
+                  'message': Messages.FILE_CREATED
+                }
+              }));
             }
           });
         } else {
@@ -321,6 +342,50 @@ define(function (require) {
             onBlur: this.handleBlur, ref: "filename"}, 
           localStorage.file ? localStorage.file : 'untitlted_log_file'
         )
+      );
+    }
+  });
+
+  var Notification = React.createClass({displayName: "Notification",
+    getInitialState: function () {
+      return {
+        data: {
+          visible: false,
+          message: '',
+          timeoutID: false
+        }
+      };
+    },
+    componentDidMount: function () {
+      window.addEventListener('showNotification', this.handleShowNotification);
+    },
+    handleShowNotification: function (event) {
+      var tempState = this.state;
+      tempState.data.visible = true;
+      tempState.data.message = event.detail.message;
+      // If we're already showing a notification, just change it and prolong the show time
+      if (tempState.visible) {
+        window.clearTimeout(this.state.timeoutID);
+      }
+      this.setState(tempState);
+      var self = this;
+      tempState.timeoutID = setTimeout(function () {
+        self.notificationOff();
+      }, 5000);
+      this.forceUpdate();
+    },
+    notificationOff: function () {
+      var tempState = this.state;
+      tempState.data.visible = false;
+      this.setState(tempState);
+      this.forceUpdate();
+    },
+    render: function () {
+      var classNamesForNotification = "notification ";
+      classNamesForNotification += this.state.data.visible ? "" : "hidden";
+      // console.log(classNamesForNotification, this.state)
+      return (
+        React.createElement("div", {className: classNamesForNotification}, this.state.data.message)
       );
     }
   });
@@ -345,11 +410,21 @@ define(function (require) {
       } else {
         if (localStorage.file) {
           if (Util.checkPath(localStorage.file, directory) != 'OK') {
-            if (Util.confirmOverwrite(localStorage.file, directory)) {
+            if (Util.confirmOverwrite(directory, localStorage.file)) {
               this.setDirectory(directory);
+              window.dispatchEvent(new CustomEvent("showNotification", {
+                'detail': {
+                  'message': Messages.FILE_OVERWRITTEN
+                }
+              }));
             }
           } else {
             this.setDirectory(directory);
+            window.dispatchEvent(new CustomEvent("showNotification", {
+              'detail': {
+                'message': Messages.SET_DIRECTORY
+              }
+            }));
           }
         } else {
           this.setDirectory(directory);
@@ -360,6 +435,11 @@ define(function (require) {
       localStorage.removeItem('file');
       window.dispatchEvent(new CustomEvent("localStorageUpdate", {}));
       window.dispatchEvent(new CustomEvent("newFileEvent", {}));
+      window.dispatchEvent(new CustomEvent("showNotification", {
+        'detail': {
+          'message': Messages.NEW_FILE_CREATED
+        }
+      }));
     },
     openFile: function () {
       var newFilePathObject = ipc.sendSync('choose-file', 'choose-file');
@@ -378,8 +458,7 @@ define(function (require) {
               src: path.join(__dirname, 'img', 'icon.png')})), 
           React.createElement(FileName, null), 
           React.createElement("i", {className: classNameForWarning, id: "warning"}, "warning"), 
-          React.createElement("div", {className: "mdl-layout-spacer"}), 
-          React.createElement("div", {id: "notification", className: "notification hidden"}), 
+          React.createElement(Notification, null), 
           React.createElement("div", {className: "mdl-layout-spacer"}), 
           React.createElement("span", {className: "directory", id: "directory"}, fullPath), 
           React.createElement("button", {className: "mdl-button mdl-js-button mdl-button--icon", 
