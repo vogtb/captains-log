@@ -193,6 +193,10 @@ define(function (require) {
   var MainInput = React.createClass({
     componentDidMount: function () {
       window.addEventListener('localStorageUpdate', this.handleLocalStorageUpdate);
+      window.addEventListener('focusOnMainInput', this.handleFocusOnMainInput);
+    },
+    handleFocusOnMainInput: function (event) {
+      React.findDOMNode(this.refs.mainInput).focus();
     },
     parseLineToObject: function (line) {
       var languagesDetected = _.filter(supportedLanguages, function(language) {
@@ -251,7 +255,7 @@ define(function (require) {
     render: function () {
       return (
         <div className="mdl-textfield mdl-js-textfield">
-          <textarea className="mdl-textfield__input main-input" type="text" rows="4"
+          <textarea className="mdl-textfield__input main-input" id="mainInput" ref="mainInput" type="text" rows="4"
               disabled={this.state.disabled} onKeyDown={this.handleKeyDown}></textarea>
           <label className="mdl-textfield__label" for="main-input">Log here...</label>
         </div>
@@ -269,18 +273,17 @@ define(function (require) {
       React.findDOMNode(this.refs.filename).focus();
     },
     handleLocalStorageUpdate: function () {
-      this.render();
+      this.forceUpdate();
     },
     handleSaveFileEvent: function () {
       this.render();
     },
     handleKeyPress: function (event) {
       if (event.which !== 0) {
-        var character = String.fromCharCode(event.which);
-        if (event.which === 13) {
-          // Move focus, user is done entering the name.
+        if (event.which === 13 || event.which === 9) {
+          window.dispatchEvent(new CustomEvent("focusOnMainInput", {}));
         }
-        return !/[^a-zA-Z0-9_-]/.test(character);
+        return !/[^a-zA-Z0-9_-]/.test(String.fromCharCode(event.which));
       }
     },
     handleKeyDown: function (event) {
@@ -315,7 +318,7 @@ define(function (require) {
                   }
                 }));
               } else {
-                React.findDOMNode(this.refs.filename).focus();
+                event.target.innerHTML = localStorage.file;
               }
             } else {
               localStorage.file = newFileName;
