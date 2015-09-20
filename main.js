@@ -1,6 +1,7 @@
 var app = require('app'),
   fs = require('fs'),
   ipc = require('ipc'),
+  spawn = require('child_process').spawn,
   _ = require('underscore'),
   path = require('path'),
   BrowserWindow = require('browser-window'),
@@ -37,7 +38,6 @@ ipc.on('load-file', function(event, data) {
   });
 });
 
-
 ipc.on('choose-directory', function(event, data) {
   dialog.showOpenDialog(mainWindow, {
     properties: ['openDirectory'],
@@ -55,14 +55,33 @@ ipc.on('choose-directory', function(event, data) {
   });
 });
 
+ipc.on('choose-file', function(event, data) {
+  dialog.showOpenDialog(mainWindow, {
+    properties: ['openFile'],
+    filters: [{name: 'yaml files', extensions: ['yaml']}]
+  }, function (filePaths) {
+    var pathObject = path.parse(filePaths[0]);
+    event.returnValue = {
+      file: pathObject.name,
+      directory: pathObject.dir
+    };
+  });
+});
+
+ipc.on('open-link', function(event, data) {
+  spawn('open', [data.url]);
+});
+
 app.on('window-all-closed', function() {
   app.quit();
 });
 
 app.on('ready', function() {
   mainWindow = new BrowserWindow({
-    width: 1240,
-    height: 780
+    'width': 1240,
+    'height': 780,
+    'min-width': 1000,
+    'min-height': 600
   });
   mainWindow.loadUrl('file://' + __dirname + '/renderer/renderer.html');
   mainWindow.on('closed', function() {

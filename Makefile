@@ -16,6 +16,7 @@ clean:
 
 package: clean dep
 	@nicns --in icons/icon.png --out icons/icon.icns
+	@jsx -x jsx renderer/jsx/ renderer/js/
 	@mkdir -p build
 	@electron-packager ./ CaptainsLog \
 	  --out=build \
@@ -30,6 +31,5 @@ package: clean dep
 
 dist: package
 	@mkdir -p dist
-	@rm build/CaptainsLog-darwin-x64/LICENSE
 	@rm build/CaptainsLog-darwin-x64/version
 	@cd build && zip -r ../dist/CaptainsLog-darwin-x64-${VERSION}.zip CaptainsLog-darwin-x64

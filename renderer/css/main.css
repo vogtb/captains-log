@@ -27,11 +27,9 @@ i.rename {
 }
 
 .input-panel {
-  height: 16%;
-  width: 96%;
+  width: calc(100% - 34px);
   margin: 0 auto;
-  padding-left: 2%;
-  padding-right: 2%;
+  padding: 0px 17px;
   background: #F5F5F5;
   position: absolute;
   bottom: 0px;
@@ -52,6 +50,19 @@ i.rename {
   resize: none;
 }
 
+/*Force scrollbar visibility when input is scrollable*/
+.input-panel ::-webkit-scrollbar {
+    -webkit-appearance: none;
+    width: 7px;
+    z-index: 100000;
+}
+.input-panel ::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background-color: rgba(0,0,0,.5);
+    -webkit-box-shadow: 0 0 1px rgba(255,255,255,.5);
+    z-index: 100000;
+}
+
 .notification.error {
   background: #FFC107;
   color: black;
@@ -69,12 +80,13 @@ i.rename {
 }
 
 .logline {
-  border-top: solid 1px #EEEEEE;
+  border-bottom: solid 1px #EEEEEE;
 }
 
 /*needs to be dynamic, but it works for now.*/
 .logline:last-child {
   padding-bottom: 140px;
+  border-bottom: none;
 }
 
 .logline .text {
@@ -87,6 +99,12 @@ i.rename {
   white-space: pre-wrap;
   word-wrap: break-word;
   font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+}
+
+@media (max-width: 1024px) {
+  .logline .timestamp {
+    font-size: 13px;
+  }
 }
 
 .logline a {
