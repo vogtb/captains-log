@@ -95,6 +95,11 @@ define(function (require) {
       window.addEventListener('localStorageUpdate', this.handleLocalStorageUpdate);
       window.addEventListener('saveFileEvent', this.saveFileToDisk);
       window.addEventListener('addLineEvent', this.handleAddLineEvent);
+      window.addEventListener('newFileEvent', this.handleNewFileEvent);
+    },
+    handleNewFileEvent: function (event) {
+      this.state.data = {lines: []};
+      this.forceUpdate();
     },
     handleAddLineEvent: function (event) {
       this.state.data.lines.push(event.detail);
@@ -245,6 +250,10 @@ define(function (require) {
     componentDidMount: function () {
       window.addEventListener('localStorageUpdate', this.handleLocalStorageUpdate);
       window.addEventListener('saveFileEvent', this.handleSaveFileEvent);
+      window.addEventListener('newFileEvent', this.handleNewFileEvent);
+    },
+    handleNewFileEvent: function (event) {
+      React.findDOMNode(this.refs.filename).focus();
     },
     handleLocalStorageUpdate: function () {
       this.render();
@@ -305,7 +314,7 @@ define(function (require) {
       return (
         React.createElement("span", {className: "mdl-layout-title filename", id: "filename", contentEditable: "true", 
             onKeyPress: this.handleKeyPress, onKeyDown: this.handleKeyDown, 
-            onBlur: this.handleBlur}, 
+            onBlur: this.handleBlur, ref: "filename"}, 
           localStorage.file ? localStorage.file : 'untitlted_log_file'
         )
       );
@@ -343,6 +352,11 @@ define(function (require) {
         }
       }
     },
+    newFile: function () {
+      localStorage.removeItem('file');
+      window.dispatchEvent(new CustomEvent("localStorageUpdate", {}));
+      window.dispatchEvent(new CustomEvent("newFileEvent", {}));
+    },
     render: function () {
       var fullPath = (localStorage.directory && localStorage.file) ?
           path.join(localStorage.directory, localStorage.file + '.yaml') : '';
@@ -361,7 +375,8 @@ define(function (require) {
               onClick: this.changeDirectory}, 
             React.createElement("i", {className: "material-icons"}, "folder_open")
           ), 
-          React.createElement("button", {className: "mdl-button mdl-js-button mdl-button--icon", id: "new"}, 
+          React.createElement("button", {className: "mdl-button mdl-js-button mdl-button--icon", 
+              onClick: this.newFile}, 
             React.createElement("i", {className: "material-icons"}, "add")
           )
         )
