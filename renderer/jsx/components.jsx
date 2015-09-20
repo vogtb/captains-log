@@ -40,6 +40,12 @@ define(function (require) {
   };
 
   var LogLine = React.createClass({
+    componentDidMount: function () {
+      if (this.props.last) {
+        var node = this.getDOMNode();
+        node.scrollIntoView();
+      }
+    },
     render: function () {
       return (
         <div className="mdl-grid logline">
@@ -53,6 +59,10 @@ define(function (require) {
 
   var LogLineCode = React.createClass({
     componentDidMount: function () {
+      if (this.props.last) {
+        var node = this.getDOMNode();
+        node.scrollIntoView();
+      }
       hljs.highlightBlock(this.getDOMNode().childNodes[0].childNodes[0].childNodes[0]);
     },
     render: function () {
@@ -86,7 +96,6 @@ define(function (require) {
       if (!localStorage.directory || !localStorage.file) {
         localStorage.localLogFile = JSON.stringify(this.state.data);
       } else {
-        console.log('saving file');
         var response = ipc.sendSync('save-file', {
           'directory': localStorage.directory,
           'file': localStorage.file,
@@ -129,8 +138,11 @@ define(function (require) {
       var content = [];
       content.push(<Instructions visible={!localStorage.directory}/>);
       if (this.state.data.lines.length) {
-        var loglines = this.state.data.lines.map(function(line) {
-          return line.code ? <LogLineCode data={line}/> : <LogLine data={line}/>;
+        var length = this.state.data.lines.length;
+        var loglines = this.state.data.lines.map(function(line, index) {
+          var last = (index == length - 1);
+          return line.code ? <LogLineCode data={line} last={last}/> :
+              <LogLine last={last} data={line}/>;
         });
         content = content.concat(loglines);
       }
@@ -382,7 +394,6 @@ define(function (require) {
     render: function () {
       var classNamesForNotification = "notification ";
       classNamesForNotification += this.state.data.visible ? "" : "hidden";
-      // console.log(classNamesForNotification, this.state)
       return (
         <div className={classNamesForNotification}>{this.state.data.message}</div>
       );
