@@ -21,8 +21,9 @@ define(function (require) {
 
   var Util = {
     confirmOverwrite: function (directory, file) {
-      return confirm("This file " + path.join(directory, file + ".yaml") +
-          " already exists! \nOverwrite this file?");
+      return confirm("The following file already exists:\n\n"
+          + path.join(directory, file + ".yaml")
+          + "\n\nWould you like to overwrite this file?");
     },
     alertChooseValidDirectory: function () {
       alert("It doesn't look like you chose valid a directory. \nPlease try again.");
@@ -295,11 +296,6 @@ define(function (require) {
     checkFilenameAvailability: function (fileName, callback) {
       callback(Util.checkPath(fileName, localStorage.directory));
     },
-    confirmOverwrite: function (directory, file) {
-      return confirm("The following file already exists:\n\n"
-          + path.join(directory, file + ".yaml")
-          + "\n\nWould you like to overwrite this file?");
-    },
     handleBlur: function (event) {
       var self = this;
       var newFileName = event.target.innerHTML;
@@ -308,7 +304,7 @@ define(function (require) {
         if (localStorage.directory) {
           this.checkFilenameAvailability(newFileName, function (response) {
             if (response !== 'OK') {
-              if (self.confirmOverwrite(localStorage.directory, newFileName)) {
+              if (Util.confirmOverwrite(localStorage.directory, newFileName)) {
                 localStorage.file = newFileName;
                 window.dispatchEvent(new CustomEvent("localStorageUpdate", {}));
                 window.dispatchEvent(new CustomEvent("saveFileEvent", {}));

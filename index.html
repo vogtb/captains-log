@@ -70,7 +70,7 @@
           <div class="mdl-cell mdl-cell--6-col">
             <h4>/code</h4>
             <p>By using the <code>/code</code> prefix, you can save and view multi-line code blocks. You can even use specific the language name (eg: <code>/java</code>, <code>/ruby</code>) to get syntax highlighting in your code block. </p>
-            <h5>Supprted languages:</h5>
+            <h5>Highlightable languages:</h5>
             <ul>
               <li>objectivec</li>
               <li>ini</li>
@@ -103,42 +103,39 @@
             <p>
 <pre><code>
 lines:
-  - text:
-      code: false
-      line: Some plain text
-    time: 'Thu Aug 20 2015, 9:08 pm'
-    timestamp: 1440122933048
-  - text:
-      code: false
-      line: 'And now for some code!'
-    time: 'Thu Aug 20 2015, 9:09 pm'
-    timestamp: 1440122941865
-  - text:
-      code: true
-      language:
-        - javascript
-      line: |-
-        app.on('window-all-closed', function() {
-          app.quit();
-        });
-    time: 'Thu Aug 20 2015, 9:09 pm'
-    timestamp: 1440122962129
-  - text:
-      code: true
-      language:
-        - python
-      line: |-
-        def weighted_choice(choices):
-           total = sum(w for c, w in choices)
-           r = random.uniform(0, total)
-           upto = 0
-           for c, w in choices:
-              if upto + w > r:
-                 return c
-              upto += w
-           assert False, "Shouldn't get here"
-    time: 'Thu Aug 20 2015, 9:09 pm'
-    timestamp: 1440122983539
+  - code: false
+    language: false
+    line: Some plain text
+    time: 'Sep 20 2015, 2:46 pm'
+    timestamp: 1442778362269
+  - code: false
+    language: false
+    line: 'And now for some code!'
+    time: 'Sep 20 2015, 2:46 pm'
+    timestamp: 1442778370893
+  - code: true
+    language: javascript
+    line: |-
+      app.on('window-all-closed', function() {
+        app.quit();
+      });
+    time: 'Sep 20 2015, 2:46 pm'
+    timestamp: 1442778386045
+  - code: true
+    language:
+      - python
+    line: |-
+      def weighted_choice(choices):
+         total = sum(w for c, w in choices)
+         r = random.uniform(0, total)
+         upto = 0
+         for c, w in choices:
+            if upto + w > r:
+               return c
+            upto += w
+         assert False, "Shouldn't get here"
+    time: 'Sep 20 2015, 2:46 pm'
+    timestamp: 1442778396558
 </code></pre>
             </p>
           </div>
