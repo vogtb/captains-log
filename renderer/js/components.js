@@ -13,6 +13,25 @@ define(function (require) {
       return {__html: text};
     };
 
+  var Util = {
+    confirmOverwrite: function (file, directory) {
+      return confirm("This file " + path.join(directory, file + ".yaml") +
+          " already exists! \nOverwrite this file?");
+    },
+    alertChooseValidDirectory: function () {
+      alert("It doesn't look like you chose valid a directory. \nPlease try again.");
+    },
+    chooseDirectory: function () {
+      return ipc.sendSync('choose-directory', 'choose-directory');
+    },
+    checkPath: function (file, directory) {
+      return ipc.sendSync('check-file', {
+        'directory': directory,
+        'file': file
+      });
+    }
+  };
+
   var LogLine = React.createClass({displayName: "LogLine",
     render: function () {
       return (
@@ -108,13 +127,6 @@ define(function (require) {
   });
 
   var Instructions = React.createClass({displayName: "Instructions",
-    confirmOverwrite: function (file, directory) {
-      return confirm("This file " + path.join(directory, file + ".yaml") +
-          " already exists! \nOverwrite this file?");
-    },
-    alertChooseValidDirectory: function () {
-      alert("It doesn't look like you chose valid a directory. \nPlease try again.");
-    },
     setDirectory: function (directory) {
       localStorage.directory = directory;
       this.setState({visible: false});
@@ -122,17 +134,13 @@ define(function (require) {
       window.dispatchEvent(new CustomEvent("saveFileEvent", {}));
     },
     chooseDirectory: function () {
-      var directory = ipc.sendSync('choose-directory', 'choose-directory');;
+      var directory = Util.chooseDirectory();
       if (!directory) {
-        this.alertChooseValidDirectory();
+        Util.alertChooseValidDirectory();
       } else {
         if (localStorage.file) {
-          var response = ipc.sendSync('check-file', {
-            'directory': directory,
-            'file': localStorage.file
-          });
-          if (response != 'OK') {
-            if (this.confirmOverwrite(localStorage.file, directory)) {
+          if (Util.checkPath(localStorage.file, directory) != 'OK') {
+            if (Util.confirmOverwrite(localStorage.file, directory)) {
               this.setDirectory(directory);
             }
           } else {
@@ -260,11 +268,7 @@ define(function (require) {
       }
     },
     checkFilenameAvailability: function (fileName, callback) {
-      var response = ipc.sendSync('check-file', {
-        'directory': localStorage.directory,
-        'file': fileName
-      });
-      callback(response);
+      callback(Util.checkPath(fileName, localStorage.directory));
     },
     confirmOverwrite: function (file, directory) {
       return confirm("This file " + path.join(directory, file + ".yaml") +
@@ -315,6 +319,30 @@ define(function (require) {
     handleLocalStorageUpdate: function (e) {
       this.forceUpdate();
     },
+    setDirectory: function (directory) {
+      localStorage.directory = directory;
+      this.setState({visible: false});
+      window.dispatchEvent(new CustomEvent("localStorageUpdate", {}));
+      window.dispatchEvent(new CustomEvent("saveFileEvent", {}));
+    },
+    changeDirectory: function () {
+      var directory = Util.chooseDirectory();
+      if (!directory) {
+        Util.alertChooseValidDirectory();
+      } else {
+        if (localStorage.file) {
+          if (Util.checkPath(localStorage.file, directory) != 'OK') {
+            if (Util.confirmOverwrite(localStorage.file, directory)) {
+              this.setDirectory(directory);
+            }
+          } else {
+            this.setDirectory(directory);
+          }
+        } else {
+          this.setDirectory(directory);
+        }
+      }
+    },
     render: function () {
       var fullPath = (localStorage.directory && localStorage.file) ?
           path.join(localStorage.directory, localStorage.file + '.yaml') : '';
@@ -329,7 +357,8 @@ define(function (require) {
           React.createElement("div", {id: "notification", className: "notification hidden"}), 
           React.createElement("div", {className: "mdl-layout-spacer"}), 
           React.createElement("span", {className: "directory", id: "directory"}, fullPath), 
-          React.createElement("button", {className: "mdl-button mdl-js-button mdl-button--icon", id: "change-directory"}, 
+          React.createElement("button", {className: "mdl-button mdl-js-button mdl-button--icon", 
+              onClick: this.changeDirectory}, 
             React.createElement("i", {className: "material-icons"}, "folder_open")
           ), 
           React.createElement("button", {className: "mdl-button mdl-js-button mdl-button--icon", id: "new"}, 
