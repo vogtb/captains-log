@@ -55,6 +55,19 @@ ipc.on('choose-directory', function(event, data) {
   });
 });
 
+ipc.on('choose-file', function(event, data) {
+  dialog.showOpenDialog(mainWindow, {
+    properties: ['openFile'],
+    filters: [{name: 'yaml files', extensions: ['yaml']}]
+  }, function (filePaths) {
+    var pathObject = path.parse(filePaths[0]);
+    event.returnValue = {
+      file: pathObject.name,
+      directory: pathObject.dir
+    };
+  });
+});
+
 ipc.on('open-link', function(event, data) {
   spawn('open', [data.url]);
 });

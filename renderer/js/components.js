@@ -96,6 +96,10 @@ define(function (require) {
       window.addEventListener('saveFileEvent', this.saveFileToDisk);
       window.addEventListener('addLineEvent', this.handleAddLineEvent);
       window.addEventListener('newFileEvent', this.handleNewFileEvent);
+      window.addEventListener('shouldLoadFile', this.handleShouldLoadFile);
+    },
+    handleShouldLoadFile: function (event) {
+      this.loadFileFromDisk();
     },
     handleNewFileEvent: function (event) {
       this.state.data = {lines: []};
@@ -357,6 +361,13 @@ define(function (require) {
       window.dispatchEvent(new CustomEvent("localStorageUpdate", {}));
       window.dispatchEvent(new CustomEvent("newFileEvent", {}));
     },
+    openFile: function () {
+      var newFilePathObject = ipc.sendSync('choose-file', 'choose-file');
+      localStorage.directory = newFilePathObject.directory;
+      localStorage.file = newFilePathObject.file;
+      window.dispatchEvent(new CustomEvent("localStorageUpdate", {}));
+      window.dispatchEvent(new CustomEvent("shouldLoadFile", {}));
+    },
     render: function () {
       var fullPath = (localStorage.directory && localStorage.file) ?
           path.join(localStorage.directory, localStorage.file + '.yaml') : '';
@@ -374,6 +385,10 @@ define(function (require) {
           React.createElement("button", {className: "mdl-button mdl-js-button mdl-button--icon", 
               onClick: this.changeDirectory}, 
             React.createElement("i", {className: "material-icons"}, "folder_open")
+          ), 
+          React.createElement("button", {className: "mdl-button mdl-js-button mdl-button--icon", 
+              onClick: this.openFile}, 
+            React.createElement("i", {className: "material-icons"}, "open_in_new")
           ), 
           React.createElement("button", {className: "mdl-button mdl-js-button mdl-button--icon", 
               onClick: this.newFile}, 
