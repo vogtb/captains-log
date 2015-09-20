@@ -108,13 +108,39 @@ define(function (require) {
   });
 
   var Instructions = React.createClass({displayName: "Instructions",
+    confirmOverwrite: function (file, directory) {
+      return confirm("This file " + path.join(directory, file + ".yaml") +
+          " already exists! \nOverwrite this file?");
+    },
+    alertChooseValidDirectory: function () {
+      alert("It doesn't look like you chose valid a directory. \nPlease try again.");
+    },
+    setDirectory: function (directory) {
+      localStorage.directory = directory;
+      this.setState({visible: false});
+      window.dispatchEvent(new CustomEvent("localStorageUpdate", {}));
+      window.dispatchEvent(new CustomEvent("saveFileEvent", {}));
+    },
     chooseDirectory: function () {
       var directory = ipc.sendSync('choose-directory', 'choose-directory');;
       if (!directory) {
-        alertChooseValidDirectory();
+        this.alertChooseValidDirectory();
       } else {
-        localStorage.directory = directory;
-        this.setState({visible: false});
+        if (localStorage.file) {
+          var response = ipc.sendSync('check-file', {
+            'directory': directory,
+            'file': localStorage.file
+          });
+          if (response != 'OK') {
+            if (this.confirmOverwrite(localStorage.file, directory)) {
+              this.setDirectory(directory);
+            }
+          } else {
+            this.setDirectory(directory);
+          }
+        } else {
+          this.setDirectory(directory);
+        }
       }
     },
     getInitialState: function() {
@@ -248,21 +274,27 @@ define(function (require) {
       var self = this;
       var newFileName = event.target.innerHTML;
       if (localStorage.file !== newFileName && newFileName !== 'untitled_log_file') {
-        this.checkFilenameAvailability(newFileName, function (response) {
-          if (response !== 'OK') {
-            if (self.confirmOverwrite(localStorage.directory, newFileName)) {
+        if (localStorage.directory) {
+          this.checkFilenameAvailability(newFileName, function (response) {
+            if (response !== 'OK') {
+              if (self.confirmOverwrite(localStorage.directory, newFileName)) {
+                localStorage.file = newFileName;
+                window.dispatchEvent(new CustomEvent("localStorageUpdate", {}));
+                window.dispatchEvent(new CustomEvent("saveFileEvent", {}));
+              } else {
+                console.log("TODO: re-focus on the filename component");
+              }
+            } else {
               localStorage.file = newFileName;
               window.dispatchEvent(new CustomEvent("localStorageUpdate", {}));
               window.dispatchEvent(new CustomEvent("saveFileEvent", {}));
-            } else {
-              console.log("TODO: re-focus on the filename component");
             }
-          } else {
-            localStorage.file = newFileName;
-            window.dispatchEvent(new CustomEvent("localStorageUpdate", {}));
-            window.dispatchEvent(new CustomEvent("saveFileEvent", {}));
-          }
-        });
+          });
+        } else {
+          localStorage.file = newFileName;
+          window.dispatchEvent(new CustomEvent("localStorageUpdate", {}));
+          window.dispatchEvent(new CustomEvent("saveFileEvent", {}));
+        }
       }
     },
     render: function () {
