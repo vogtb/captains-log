@@ -1,10 +1,12 @@
 define(function (require) {
   var React = require('react'),
     moment = require('moment'),
+    Utils = require('utils'),
     _ = require('underscore'),
     yaml = require('yaml'),
     supportedLanguages = hljs.listLanguages(),
-    encodeLineToHTML = function (text) {
+    Components = {},
+    _encodeLineToHTML = function (text) {
       text = text
           .replace(/(\r\n|\n|\r)/gm, '<br>')
           .replace(/(\b(https?|ftp):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gim,
@@ -19,27 +21,7 @@ define(function (require) {
       NEW_FILE_CREATED: "New file created."
     };
 
-  var Util = {
-    confirmOverwrite: function (directory, file) {
-      return confirm("The following file already exists:\n\n"
-          + path.join(directory, file + ".yaml")
-          + "\n\nWould you like to overwrite this file?");
-    },
-    alertChooseValidDirectory: function () {
-      alert("It doesn't look like you chose valid a directory. \nPlease try again.");
-    },
-    chooseDirectory: function () {
-      return ipc.sendSync('choose-directory', 'choose-directory');
-    },
-    checkPath: function (file, directory) {
-      return ipc.sendSync('check-file', {
-        'directory': directory,
-        'file': file
-      });
-    }
-  };
-
-  var LogLine = React.createClass({
+  Components.LogLine = React.createClass({
     componentDidMount: function () {
       if (this.props.last) {
         var node = this.getDOMNode();
@@ -50,14 +32,14 @@ define(function (require) {
       return (
         <div className="mdl-grid logline">
           <div className="mdl-cell mdl-cell--10-col text"
-              dangerouslySetInnerHTML={encodeLineToHTML(this.props.data.line)}></div>
+              dangerouslySetInnerHTML={_encodeLineToHTML(this.props.data.line)}></div>
           <div className="mdl-cell mdl-cell--2-col timestamp">{this.props.data.time}</div>
         </div>
       );
     }
   });
 
-  var LogLineCode = React.createClass({
+  Components.LogLineCode = React.createClass({
     componentDidMount: function () {
       if (this.props.last) {
         var node = this.getDOMNode();
@@ -77,7 +59,7 @@ define(function (require) {
     }
   });
 
-  var LogFile = React.createClass({
+  Components.LogFile = React.createClass({
     loadFileFromDisk: function () {
       if (localStorage.file && localStorage.directory) {
         var file = yaml.safeLoad(ipc.sendSync('load-file', {
@@ -136,13 +118,13 @@ define(function (require) {
     },
     render: function () {
       var content = [];
-      content.push(<Instructions visible={!localStorage.directory}/>);
+      content.push(<Components.Instructions visible={!localStorage.directory}/>);
       if (this.state.data.lines.length) {
         var length = this.state.data.lines.length;
         var loglines = this.state.data.lines.map(function(line, index) {
           var last = (index == length - 1);
-          return line.code ? <LogLineCode data={line} last={last}/> :
-              <LogLine last={last} data={line}/>;
+          return line.code ? <Components.LogLineCode data={line} last={last}/> :
+              <Components.LogLine last={last} data={line}/>;
         });
         content = content.concat(loglines);
       }
@@ -152,7 +134,7 @@ define(function (require) {
     }
   });
 
-  var Instructions = React.createClass({
+  Components.Instructions = React.createClass({
     setDirectory: function (directory) {
       localStorage.directory = directory;
       this.setState({visible: false});
@@ -160,13 +142,13 @@ define(function (require) {
       window.dispatchEvent(new CustomEvent("saveFileEvent", {}));
     },
     chooseDirectory: function () {
-      var directory = Util.chooseDirectory();
+      var directory = Utils.chooseDirectory();
       if (!directory) {
-        Util.alertChooseValidDirectory();
+        Utils.alertChooseValidDirectory();
       } else {
         if (localStorage.file) {
-          if (Util.checkPath(localStorage.file, directory) != 'OK') {
-            if (Util.confirmOverwrite(directory, localStorage.file)) {
+          if (Utils.checkPath(localStorage.file, directory) != 'OK') {
+            if (Utils.confirmOverwrite(directory, localStorage.file)) {
               this.setDirectory(directory);
               window.dispatchEvent(new CustomEvent("showNotification", {
                 'detail': {
@@ -203,7 +185,7 @@ define(function (require) {
     }
   });
 
-  var MainInput = React.createClass({
+  Components.MainInput = React.createClass({
     componentDidMount: function () {
       window.addEventListener('localStorageUpdate', this.handleLocalStorageUpdate);
       window.addEventListener('focusOnMainInput', this.handleFocusOnMainInput);
@@ -276,7 +258,7 @@ define(function (require) {
     }
   });
 
-  var FileName = React.createClass({
+  Components.FileName = React.createClass({
     componentDidMount: function () {
       window.addEventListener('localStorageUpdate', this.handleLocalStorageUpdate);
       window.addEventListener('saveFileEvent', this.handleSaveFileEvent);
@@ -306,7 +288,7 @@ define(function (require) {
       }
     },
     checkFilenameAvailability: function (fileName, callback) {
-      callback(Util.checkPath(fileName, localStorage.directory));
+      callback(Utils.checkPath(fileName, localStorage.directory));
     },
     handleBlur: function (event) {
       var self = this;
@@ -316,7 +298,7 @@ define(function (require) {
         if (localStorage.directory) {
           this.checkFilenameAvailability(newFileName, function (response) {
             if (response !== 'OK') {
-              if (Util.confirmOverwrite(localStorage.directory, newFileName)) {
+              if (Utils.confirmOverwrite(localStorage.directory, newFileName)) {
                 localStorage.file = newFileName;
                 window.dispatchEvent(new CustomEvent("localStorageUpdate", {}));
                 window.dispatchEvent(new CustomEvent("saveFileEvent", {}));
@@ -357,7 +339,7 @@ define(function (require) {
     }
   });
 
-  var Notification = React.createClass({
+  Components.Notification = React.createClass({
     getInitialState: function () {
       return {
         data: {
@@ -400,7 +382,7 @@ define(function (require) {
     }
   });
 
-  var Nav = React.createClass({
+  Components.Nav = React.createClass({
     componentDidMount: function () {
       window.addEventListener('localStorageUpdate', this.handleLocalStorageUpdate);
     },
@@ -414,13 +396,13 @@ define(function (require) {
       window.dispatchEvent(new CustomEvent("saveFileEvent", {}));
     },
     changeDirectory: function () {
-      var directory = Util.chooseDirectory();
+      var directory = Utils.chooseDirectory();
       if (!directory) {
-        Util.alertChooseValidDirectory();
+        Utils.alertChooseValidDirectory();
       } else {
         if (localStorage.file) {
-          if (Util.checkPath(localStorage.file, directory) != 'OK') {
-            if (Util.confirmOverwrite(directory, localStorage.file)) {
+          if (Utils.checkPath(localStorage.file, directory) != 'OK') {
+            if (Utils.confirmOverwrite(directory, localStorage.file)) {
               this.setDirectory(directory);
               window.dispatchEvent(new CustomEvent("showNotification", {
                 'detail': {
@@ -466,9 +448,9 @@ define(function (require) {
         <div className="mdl-layout__header-row menu">
           <span><img className="logo" draggable="false"
               src={path.join(__dirname, 'img', 'icon.png')} /></span>
-          <FileName />
+          <Components.FileName />
           <i className={classNameForWarning} id="warning">warning</i>
-          <Notification />
+          <Components.Notification />
           <div className="mdl-layout-spacer"></div>
           <span className="directory" id="directory">{fullPath}</span>
           <button className="mdl-button mdl-js-button mdl-button--icon"
@@ -489,16 +471,18 @@ define(function (require) {
   });
 
   React.render(
-    <LogFile />,
+    <Components.LogFile />,
     document.getElementById('react-logfile')
   );
   React.render(
-    <Nav />,
+    <Components.Nav />,
     document.getElementById('react-nav')
   );
   React.render(
-    <MainInput />,
+    <Components.MainInput />,
     document.getElementById('react-main-input')
   );
   componentHandler.upgradeAllRegistered();
+
+  return Components;
 });

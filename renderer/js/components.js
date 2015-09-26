@@ -1,10 +1,12 @@
 define(function (require) {
   var React = require('react'),
     moment = require('moment'),
+    Utils = require('utils'),
     _ = require('underscore'),
     yaml = require('yaml'),
     supportedLanguages = hljs.listLanguages(),
-    encodeLineToHTML = function (text) {
+    Components = {},
+    _encodeLineToHTML = function (text) {
       text = text
           .replace(/(\r\n|\n|\r)/gm, '<br>')
           .replace(/(\b(https?|ftp):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gim,
@@ -19,27 +21,7 @@ define(function (require) {
       NEW_FILE_CREATED: "New file created."
     };
 
-  var Util = {
-    confirmOverwrite: function (directory, file) {
-      return confirm("The following file already exists:\n\n"
-          + path.join(directory, file + ".yaml")
-          + "\n\nWould you like to overwrite this file?");
-    },
-    alertChooseValidDirectory: function () {
-      alert("It doesn't look like you chose valid a directory. \nPlease try again.");
-    },
-    chooseDirectory: function () {
-      return ipc.sendSync('choose-directory', 'choose-directory');
-    },
-    checkPath: function (file, directory) {
-      return ipc.sendSync('check-file', {
-        'directory': directory,
-        'file': file
-      });
-    }
-  };
-
-  var LogLine = React.createClass({displayName: "LogLine",
+  Components.LogLine = React.createClass({displayName: "LogLine",
     componentDidMount: function () {
       if (this.props.last) {
         var node = this.getDOMNode();
@@ -50,14 +32,14 @@ define(function (require) {
       return (
         React.createElement("div", {className: "mdl-grid logline"}, 
           React.createElement("div", {className: "mdl-cell mdl-cell--10-col text", 
-              dangerouslySetInnerHTML: encodeLineToHTML(this.props.data.line)}), 
+              dangerouslySetInnerHTML: _encodeLineToHTML(this.props.data.line)}), 
           React.createElement("div", {className: "mdl-cell mdl-cell--2-col timestamp"}, this.props.data.time)
         )
       );
     }
   });
 
-  var LogLineCode = React.createClass({displayName: "LogLineCode",
+  Components.LogLineCode = React.createClass({displayName: "LogLineCode",
     componentDidMount: function () {
       if (this.props.last) {
         var node = this.getDOMNode();
@@ -77,7 +59,7 @@ define(function (require) {
     }
   });
 
-  var LogFile = React.createClass({displayName: "LogFile",
+  Components.LogFile = React.createClass({displayName: "LogFile",
     loadFileFromDisk: function () {
       if (localStorage.file && localStorage.directory) {
         var file = yaml.safeLoad(ipc.sendSync('load-file', {
@@ -136,13 +118,13 @@ define(function (require) {
     },
     render: function () {
       var content = [];
-      content.push(React.createElement(Instructions, {visible: !localStorage.directory}));
+      content.push(React.createElement(Components.Instructions, {visible: !localStorage.directory}));
       if (this.state.data.lines.length) {
         var length = this.state.data.lines.length;
         var loglines = this.state.data.lines.map(function(line, index) {
           var last = (index == length - 1);
-          return line.code ? React.createElement(LogLineCode, {data: line, last: last}) :
-              React.createElement(LogLine, {last: last, data: line});
+          return line.code ? React.createElement(Components.LogLineCode, {data: line, last: last}) :
+              React.createElement(Components.LogLine, {last: last, data: line});
         });
         content = content.concat(loglines);
       }
@@ -152,7 +134,7 @@ define(function (require) {
     }
   });
 
-  var Instructions = React.createClass({displayName: "Instructions",
+  Components.Instructions = React.createClass({displayName: "Instructions",
     setDirectory: function (directory) {
       localStorage.directory = directory;
       this.setState({visible: false});
@@ -160,13 +142,13 @@ define(function (require) {
       window.dispatchEvent(new CustomEvent("saveFileEvent", {}));
     },
     chooseDirectory: function () {
-      var directory = Util.chooseDirectory();
+      var directory = Utils.chooseDirectory();
       if (!directory) {
-        Util.alertChooseValidDirectory();
+        Utils.alertChooseValidDirectory();
       } else {
         if (localStorage.file) {
-          if (Util.checkPath(localStorage.file, directory) != 'OK') {
-            if (Util.confirmOverwrite(directory, localStorage.file)) {
+          if (Utils.checkPath(localStorage.file, directory) != 'OK') {
+            if (Utils.confirmOverwrite(directory, localStorage.file)) {
               this.setDirectory(directory);
               window.dispatchEvent(new CustomEvent("showNotification", {
                 'detail': {
@@ -203,7 +185,7 @@ define(function (require) {
     }
   });
 
-  var MainInput = React.createClass({displayName: "MainInput",
+  Components.MainInput = React.createClass({displayName: "MainInput",
     componentDidMount: function () {
       window.addEventListener('localStorageUpdate', this.handleLocalStorageUpdate);
       window.addEventListener('focusOnMainInput', this.handleFocusOnMainInput);
@@ -276,7 +258,7 @@ define(function (require) {
     }
   });
 
-  var FileName = React.createClass({displayName: "FileName",
+  Components.FileName = React.createClass({displayName: "FileName",
     componentDidMount: function () {
       window.addEventListener('localStorageUpdate', this.handleLocalStorageUpdate);
       window.addEventListener('saveFileEvent', this.handleSaveFileEvent);
@@ -306,7 +288,7 @@ define(function (require) {
       }
     },
     checkFilenameAvailability: function (fileName, callback) {
-      callback(Util.checkPath(fileName, localStorage.directory));
+      callback(Utils.checkPath(fileName, localStorage.directory));
     },
     handleBlur: function (event) {
       var self = this;
@@ -316,7 +298,7 @@ define(function (require) {
         if (localStorage.directory) {
           this.checkFilenameAvailability(newFileName, function (response) {
             if (response !== 'OK') {
-              if (Util.confirmOverwrite(localStorage.directory, newFileName)) {
+              if (Utils.confirmOverwrite(localStorage.directory, newFileName)) {
                 localStorage.file = newFileName;
                 window.dispatchEvent(new CustomEvent("localStorageUpdate", {}));
                 window.dispatchEvent(new CustomEvent("saveFileEvent", {}));
@@ -357,7 +339,7 @@ define(function (require) {
     }
   });
 
-  var Notification = React.createClass({displayName: "Notification",
+  Components.Notification = React.createClass({displayName: "Notification",
     getInitialState: function () {
       return {
         data: {
@@ -400,7 +382,7 @@ define(function (require) {
     }
   });
 
-  var Nav = React.createClass({displayName: "Nav",
+  Components.Nav = React.createClass({displayName: "Nav",
     componentDidMount: function () {
       window.addEventListener('localStorageUpdate', this.handleLocalStorageUpdate);
     },
@@ -414,13 +396,13 @@ define(function (require) {
       window.dispatchEvent(new CustomEvent("saveFileEvent", {}));
     },
     changeDirectory: function () {
-      var directory = Util.chooseDirectory();
+      var directory = Utils.chooseDirectory();
       if (!directory) {
-        Util.alertChooseValidDirectory();
+        Utils.alertChooseValidDirectory();
       } else {
         if (localStorage.file) {
-          if (Util.checkPath(localStorage.file, directory) != 'OK') {
-            if (Util.confirmOverwrite(directory, localStorage.file)) {
+          if (Utils.checkPath(localStorage.file, directory) != 'OK') {
+            if (Utils.confirmOverwrite(directory, localStorage.file)) {
               this.setDirectory(directory);
               window.dispatchEvent(new CustomEvent("showNotification", {
                 'detail': {
@@ -466,9 +448,9 @@ define(function (require) {
         React.createElement("div", {className: "mdl-layout__header-row menu"}, 
           React.createElement("span", null, React.createElement("img", {className: "logo", draggable: "false", 
               src: path.join(__dirname, 'img', 'icon.png')})), 
-          React.createElement(FileName, null), 
+          React.createElement(Components.FileName, null), 
           React.createElement("i", {className: classNameForWarning, id: "warning"}, "warning"), 
-          React.createElement(Notification, null), 
+          React.createElement(Components.Notification, null), 
           React.createElement("div", {className: "mdl-layout-spacer"}), 
           React.createElement("span", {className: "directory", id: "directory"}, fullPath), 
           React.createElement("button", {className: "mdl-button mdl-js-button mdl-button--icon", 
@@ -489,16 +471,18 @@ define(function (require) {
   });
 
   React.render(
-    React.createElement(LogFile, null),
+    React.createElement(Components.LogFile, null),
     document.getElementById('react-logfile')
   );
   React.render(
-    React.createElement(Nav, null),
+    React.createElement(Components.Nav, null),
     document.getElementById('react-nav')
   );
   React.render(
-    React.createElement(MainInput, null),
+    React.createElement(Components.MainInput, null),
     document.getElementById('react-main-input')
   );
   componentHandler.upgradeAllRegistered();
+
+  return Components;
 });

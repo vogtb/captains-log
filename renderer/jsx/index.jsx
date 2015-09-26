@@ -2,15 +2,15 @@ define(function (require) {
   var CL = require('components'),
     React = require('react');
   React.render(
-    React.createElement(CL.LogFile, null),
+    <CL.LogFile />,
     document.getElementById('react-logfile')
   );
   React.render(
-    React.createElement(CL.Nav, null),
+    <CL.Nav />,
     document.getElementById('react-nav')
   );
   React.render(
-    React.createElement(CL.MainInput, null),
+    <CL.MainInput />,
     document.getElementById('react-main-input')
   );
   componentHandler.upgradeAllRegistered();
