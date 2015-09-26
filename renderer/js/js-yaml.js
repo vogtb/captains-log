@@ -439,9 +439,11 @@ function writeScalar(state, object, level, iskey) {
     }
 
     if (trailingLineBreaks === 0) {
-      modifier = '-';
+      // @vogtb edited here
+      // modifier = '-';
     } else if (trailingLineBreaks === 2) {
-      modifier = '+';
+      // @vogtb edited here
+      // modifier = '+';
     }
   }
 
@@ -454,6 +456,9 @@ function writeScalar(state, object, level, iskey) {
   if (!sawLineFeed) {
     literal = false;
   }
+
+  // @vogtb edited here, added
+  literal = true;
 
   if (simple) {
     state.dump = object;
