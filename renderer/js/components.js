@@ -1,10 +1,5 @@
-define(function (require) {
-  var React = require('react'),
-    moment = require('moment'),
-    Utils = require('utils'),
-    _ = require('underscore'),
-    yaml = require('yaml'),
-    supportedLanguages = hljs.listLanguages(),
+define(['react', 'moment', 'utils', 'underscore', 'yaml'], function (React, moment, utils, _, yaml) {
+  var supportedLanguages = hljs.listLanguages(),
     Components = {},
     _encodeLineToHTML = function (text) {
       text = text
@@ -455,15 +450,30 @@ define(function (require) {
           React.createElement("span", {className: "directory", id: "directory"}, fullPath), 
           React.createElement("button", {className: "mdl-button mdl-js-button mdl-button--icon", 
               onClick: this.changeDirectory}, 
-            React.createElement("i", {className: "material-icons"}, "folder_open")
+            React.createElement("span", null, 
+              React.createElement("svg", {fill: "#FFFFFF", height: "24", viewBox: "0 0 24 24", width: "24", xmlns: "http://www.w3.org/2000/svg"}, 
+                React.createElement("path", {d: "M0 0h24v24H0z", fill: "none"}), 
+                React.createElement("path", {d: "M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 12H4V8h16v10z"})
+              )
+            )
           ), 
           React.createElement("button", {className: "mdl-button mdl-js-button mdl-button--icon", 
               onClick: this.openFile}, 
-            React.createElement("i", {className: "material-icons"}, "open_in_new")
+            React.createElement("span", null, 
+              React.createElement("svg", {fill: "#FFFFFF", height: "24", viewBox: "0 0 24 24", width: "24", xmlns: "http://www.w3.org/2000/svg"}, 
+                React.createElement("path", {d: "M0 0h24v24H0z", fill: "none"}), 
+                React.createElement("path", {d: "M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"})
+              )
+            )
           ), 
           React.createElement("button", {className: "mdl-button mdl-js-button mdl-button--icon", 
               onClick: this.newFile}, 
-            React.createElement("i", {className: "material-icons"}, "add")
+            React.createElement("span", null, 
+              React.createElement("svg", {fill: "#FFFFFF", height: "24", viewBox: "0 0 24 24", width: "24", xmlns: "http://www.w3.org/2000/svg"}, 
+                React.createElement("path", {d: "M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"}), 
+                React.createElement("path", {d: "M0 0h24v24H0z", fill: "none"})
+              )
+            )
           )
         )
       );
