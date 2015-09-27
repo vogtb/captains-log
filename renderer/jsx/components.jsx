@@ -1,4 +1,4 @@
-define(['react', 'moment', 'utils', 'underscore', 'yaml'], function (React, moment, utils, _, yaml) {
+define(['react', 'moment', 'utils', 'underscore', 'yaml'], function (React, moment, Utils, _, yaml) {
   var supportedLanguages = hljs.listLanguages(),
     Components = {},
     _encodeLineToHTML = function (text) {
@@ -57,11 +57,24 @@ define(['react', 'moment', 'utils', 'underscore', 'yaml'], function (React, mome
   Components.LogFile = React.createClass({
     loadFileFromDisk: function () {
       if (localStorage.file && localStorage.directory) {
-        var file = yaml.safeLoad(ipc.sendSync('load-file', {
-          'directory': localStorage.directory,
-          'file': localStorage.file
-        }));
-        this.setState({data: file});
+        // in case the file is not formatted properly
+        try {
+          var file = yaml.safeLoad(ipc.sendSync('load-file', {
+            'directory': localStorage.directory,
+            'file': localStorage.file
+          }));
+          if (file instanceof Object) {
+            if (_.isUndefined(file.lines) || !(file.lines instanceof Array)) {
+              throw new Error();
+            }
+          }
+          this.setState({data: file});
+        } catch (err) {
+          Utils.alertYAMLFileFormatErr();
+          this.setState({data:{lines: []}});
+          localStorage.removeItem("file");
+          window.dispatchEvent(new CustomEvent("localStorageUpdate", {}));
+        }
       } else {
         if (!localStorage.localLogFile) {
           localStorage.localLogFile = JSON.stringify({data: {lines: []}});
@@ -444,7 +457,12 @@ define(['react', 'moment', 'utils', 'underscore', 'yaml'], function (React, mome
           <span><img className="logo" draggable="false"
               src={path.join(__dirname, 'img', 'icon.png')} /></span>
           <Components.FileName />
-          <i className={classNameForWarning} id="warning">warning</i>
+          <span className={classNameForWarning} id="warning">
+            <svg fill="#FFFFFF" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M0 0h24v24H0z" fill="none"/>
+              <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>
+            </svg>
+          </span>
           <Components.Notification />
           <div className="mdl-layout-spacer"></div>
           <span className="directory" id="directory">{fullPath}</span>

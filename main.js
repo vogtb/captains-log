@@ -44,8 +44,12 @@ ipc.on('choose-directory', function(event, data) {
     filters: []
   }, function (directoryListing) {
     if (!_.isUndefined(directoryListing)) {
-      if (!_.isUndefined(directoryListing[0])) {
-        event.returnValue = directoryListing[0];
+      if (directoryListing.length !== 0) {
+        if (!_.isUndefined(directoryListing[0])) {
+          event.returnValue = directoryListing[0];
+        } else {
+          event.returnValue = false;
+        }
       } else {
         event.returnValue = false;
       }

@@ -2951,7 +2951,7 @@ ul, ol {
   color: rgb(255,255,255) !important; }
 
 .mdl-color--primary {
-  background-color: rgb(63,81,181) !important; }
+  background-color: #333333 !important; }
 
 .mdl-color--primary-contrast {
   background-color: rgb(255,255,255) !important; }
@@ -2966,7 +2966,7 @@ ul, ol {
   background-color: rgb(255,255,255) !important; }
 
 .mdl-color-text--primary {
-  color: rgb(63,81,181) !important; }
+  color: #333333 !important; }
 
 .mdl-color-text--primary-contrast {
   color: rgb(255,255,255) !important; }
@@ -3720,7 +3720,7 @@ ul, ol {
   .mdl-button:active {
     background-color: rgba(158,158,158, 0.40); }
   .mdl-button.mdl-button--colored {
-    color: rgb(63,81,181); }
+    color: #333333; }
     .mdl-button.mdl-button--colored:focus:not(:active) {
       background-color: rgba(0,0,0, 0.12); }
 
@@ -8683,7 +8683,7 @@ _:-ms-input-placeholder, :root .mdl-slider.mdl-slider.is-upgraded {
             transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
   .mdl-textfield--floating-label.is-focused .mdl-textfield__label,
   .mdl-textfield--floating-label.is-dirty .mdl-textfield__label {
-    color: rgb(63,81,181);
+    color: #333333;
     font-size: 12px;
     top: 4px;
     visibility: visible; }
@@ -8694,7 +8694,7 @@ _:-ms-input-placeholder, :root .mdl-slider.mdl-slider.is-upgraded {
     color: rgb(222, 50, 38);
     font-size: 12px; }
   .mdl-textfield__label:after {
-    background-color: rgb(63,81,181);
+    background-color: #333333;
     bottom: 20px;
     content: '';
     height: 2px;

@@ -62,13 +62,8 @@ img.logo {
     z-index: 100000;
 }
 
-.notification.error {
-  background: #FFC107;
-  color: black;
-}
-
 .notification {
-  background: #1565C0;
+  background: #212121;
   color: white;
   padding: 5px 10px 3px 10px;
   margin-left: 18px;

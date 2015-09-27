@@ -16,6 +16,9 @@ define(function () {
         'directory': directory,
         'file': file
       });
+    },
+    alertYAMLFileFormatErr: function () {
+      alert("The file that you attempted to load is not valid.\nPlease try a different file, or create a new one.");
     }
   };
 
