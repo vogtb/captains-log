@@ -1,6 +1,7 @@
 body {
   min-height: 780px;
   min-width: 780px;
+  overflow: hidden;
 }
 
 .menu {
@@ -21,9 +22,6 @@ img.logo {
 /*overriding mdl*/
 .mdl-layout__header-row.menu {
   padding: 0 16px 0 16px;
-}
-i.rename {
-  font-size: 18px;
 }
 
 .input-panel {
