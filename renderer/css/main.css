@@ -5,7 +5,7 @@ body {
 }
 
 .menu {
-  background: #2196F3;
+  background: #333333;
   color: white;
 }
 
@@ -23,6 +23,7 @@ img.logo {
 .mdl-layout__header-row.menu {
   padding: 0 16px 0 16px;
 }
+
 
 .input-panel {
   width: calc(100% - 34px);
