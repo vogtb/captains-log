@@ -11,7 +11,7 @@ define(['react', 'moment', 'utils', 'underscore', 'yaml'], function (React, mome
     },
     Messages = {
       FILE_OVERWRITTEN: "File overwritten.",
-      FILE_CREATED: "File created.",
+      FILE_CREATED: "Name new file.",
       SET_DIRECTORY: "Directory set.",
       NEW_FILE_CREATED: "New file created."
     };
