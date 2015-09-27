@@ -449,6 +449,7 @@ define(['react', 'moment', 'utils', 'underscore', 'yaml'], function (React, mome
           React.createElement("div", {className: "mdl-layout-spacer"}), 
           React.createElement("span", {className: "directory", id: "directory"}, fullPath), 
           React.createElement("button", {className: "mdl-button mdl-js-button mdl-button--icon", 
+              title: "Change Directory", 
               onClick: this.changeDirectory}, 
             React.createElement("span", null, 
               React.createElement("svg", {fill: "#FFFFFF", height: "24", viewBox: "0 0 24 24", width: "24", xmlns: "http://www.w3.org/2000/svg"}, 
@@ -458,6 +459,7 @@ define(['react', 'moment', 'utils', 'underscore', 'yaml'], function (React, mome
             )
           ), 
           React.createElement("button", {className: "mdl-button mdl-js-button mdl-button--icon", 
+              title: "Open File", 
               onClick: this.openFile}, 
             React.createElement("span", null, 
               React.createElement("svg", {fill: "#FFFFFF", height: "24", viewBox: "0 0 24 24", width: "24", xmlns: "http://www.w3.org/2000/svg"}, 
@@ -467,6 +469,7 @@ define(['react', 'moment', 'utils', 'underscore', 'yaml'], function (React, mome
             )
           ), 
           React.createElement("button", {className: "mdl-button mdl-js-button mdl-button--icon", 
+              title: "New File", 
               onClick: this.newFile}, 
             React.createElement("span", null, 
               React.createElement("svg", {fill: "#FFFFFF", height: "24", viewBox: "0 0 24 24", width: "24", xmlns: "http://www.w3.org/2000/svg"}, 

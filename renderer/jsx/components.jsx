@@ -449,6 +449,7 @@ define(['react', 'moment', 'utils', 'underscore', 'yaml'], function (React, mome
           <div className="mdl-layout-spacer"></div>
           <span className="directory" id="directory">{fullPath}</span>
           <button className="mdl-button mdl-js-button mdl-button--icon"
+              title="Change Directory"
               onClick={this.changeDirectory}>
             <span>
               <svg fill="#FFFFFF" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
@@ -458,6 +459,7 @@ define(['react', 'moment', 'utils', 'underscore', 'yaml'], function (React, mome
             </span>
           </button>
           <button className="mdl-button mdl-js-button mdl-button--icon"
+              title="Open File"
               onClick={this.openFile}>
             <span>
               <svg fill="#FFFFFF" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
@@ -467,6 +469,7 @@ define(['react', 'moment', 'utils', 'underscore', 'yaml'], function (React, mome
             </span>
           </button>
           <button className="mdl-button mdl-js-button mdl-button--icon"
+              title="New File"
               onClick={this.newFile}>
             <span>
               <svg fill="#FFFFFF" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
