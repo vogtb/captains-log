@@ -501,19 +501,5 @@ define(['react', 'moment', 'utils', 'underscore', 'yaml'], function (React, mome
     }
   });
 
-  React.render(
-    <Components.LogFile />,
-    document.getElementById('react-logfile')
-  );
-  React.render(
-    <Components.Nav />,
-    document.getElementById('react-nav')
-  );
-  React.render(
-    <Components.MainInput />,
-    document.getElementById('react-main-input')
-  );
-  componentHandler.upgradeAllRegistered();
-
   return Components;
 });
